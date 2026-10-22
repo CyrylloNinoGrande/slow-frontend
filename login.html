@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1C2833">
+    <title>Logowanie - Strefa SLoW</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#121212] text-[#2C3531] flex justify-center items-center min-h-screen m-0">
+
+    <div class="w-full max-w-md bg-[#FAF8F5] min-h-screen flex flex-col justify-between shadow-2xl relative overflow-hidden">
+
+        <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222]">
+            <div class="w-36 flex items-center">
+                <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
+            </div>
+        </header>
+
+        <main class="px-6 flex-1 flex flex-col justify-center space-y-4 py-6">
+            <div class="text-center space-y-1">
+                <h1 id="form-title" class="text-xl font-bold text-[#1C2E24]">Witaj w Strefie SLoW 🌿</h1>
+                <p id="form-subtitle" class="text-xs text-[#7C8780]">Zaloguj się swoim e-mailem i hasłem.</p>
+            </div>
+
+            <div class="bg-white border border-[#E2DCD0] rounded-3xl p-5 shadow-sm space-y-3.5">
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-[#7C8780] mb-1">Adres e-mail</label>
+                    <input type="email" id="email-input" placeholder="np. cyryl@example.com" class="w-full px-4 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
+                </div>
+
+                <div>
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-[#7C8780] mb-1">Hasło</label>
+                    <div class="relative flex items-center">
+                        <input type="password" id="password-input" placeholder="••••••••" class="w-full px-4 py-2.5 pr-10 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
+                        <button type="button" onclick="togglePasswordVisibility()" class="absolute right-3 text-gray-400 hover:text-gray-600 focus:outline-none cursor-pointer text-sm">
+                            <span id="eye-icon">👁️</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="referral-box" class="hidden">
+                    <label class="block text-[11px] font-bold uppercase tracking-wider text-[#7C8780] mb-1">Kod polecenia od znajomego <span class="normal-case font-normal text-gray-400">(opcjonalnie)</span></label>
+                    <input type="text" id="referral-input" placeholder="np. CYR123" class="w-full px-4 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] uppercase focus:outline-none focus:border-[#E59866]">
+                </div>
+
+                <button id="submit-btn" onclick="handleAuth(event)" class="w-full bg-[#1C2833] hover:bg-[#2E4053] text-white py-3 rounded-xl font-bold text-xs shadow-md transition cursor-pointer">
+                    Zaloguj się →
+                </button>
+
+                <div class="text-center pt-1">
+                    <button type="button" onclick="toggleMode()" class="text-[11px] text-[#3A539B] hover:underline cursor-pointer">
+                        <span id="toggle-text">Nie masz konta? Zarejestruj się</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="text-center space-y-1">
+                <button onclick="forgotPassword()" class="text-[10px] text-[#7C8780] hover:text-[#1C2E24] transition cursor-pointer underline">
+                    Nie pamiętam hasła
+                </button>
+            </div>
+        </main>
+
+        <footer class="text-center pb-6 px-6 space-y-1 border-t border-[#E2DCD0] pt-4">
+            <p class="text-[10px] font-semibold text-[#1C2E24]">Potrzebujesz pomocy?</p>
+            <p class="text-[10px] text-[#7C8780]">Napisz do nas: <a href="mailto:biuro@slowfoundation.com" class="text-[#3A539B] font-medium underline">biuro@slowfoundation.com</a></p>
+        </footer>
+
+    </div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000' 
+            : 'https://slow-backend.onrender.com';
+
+        let isRegisterMode = false;
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedEmail = localStorage.getItem('slow_last_email');
+            if (savedEmail) {
+                document.getElementById('email-input').value = savedEmail;
+            }
+
+            // Automatyczne przełączenie na rejestrację i uzupełnienie kodu z linku polecenia
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+
+            if (refParam) {
+                if (!isRegisterMode) {
+                    toggleMode();
+                }
+                const referralInput = document.getElementById('referral-input');
+                if (referralInput) {
+                    referralInput.value = refParam.toUpperCase();
+                }
+            }
+        });
+
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password-input');
+            const eyeIcon = document.getElementById('eye-icon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerText = '🙈';
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerText = '👁️';
+            }
+        }
+
+        function toggleMode() {
+            isRegisterMode = !isRegisterMode;
+            const title = document.getElementById('form-title');
+            const subtitle = document.getElementById('form-subtitle');
+            const submitBtn = document.getElementById('submit-btn');
+            const toggleText = document.getElementById('toggle-text');
+            const referralBox = document.getElementById('referral-box');
+
+            if (isRegisterMode) {
+                title.innerText = "Utwórz konto SLoW 🌿";
+                subtitle.innerText = "Zarejestruj się, aby rozpocząć uważną podróż.";
+                submitBtn.innerText = "Zarejestruj się →";
+                toggleText.innerText = "Masz już konto? Zaloguj się";
+                referralBox.classList.remove('hidden');
+            } else {
+                title.innerText = "Witaj w Strefie SLoW 🌿";
+                subtitle.innerText = "Zaloguj się swoim e-mailem i hasłem.";
+                submitBtn.innerText = "Zaloguj się →";
+                toggleText.innerText = "Nie masz konta? Zarejestruj się";
+                referralBox.classList.add('hidden');
+            }
+        }
+
+        async function handleAuth(event) {
+            event.preventDefault();
+            const email = document.getElementById('email-input').value.trim();
+            const password = document.getElementById('password-input').value.trim();
+            const referralCodeInput = document.getElementById('referral-input').value.trim();
+
+            if (!email || !email.includes('@')) {
+                alert('Podaj poprawny adres e-mail.');
+                return;
+            }
+            if (!password || password.length < 4) {
+                alert('Hasło musi mieć co najmniej 4 znaki.');
+                return;
+            }
+
+            const endpoint = isRegisterMode ? '/api/auth/register' : '/api/auth/login';
+
+            try {
+                const response = await fetch(`${API_BASE}${endpoint}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password, referralCodeInput })
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('slow_last_email', email);
+                    localStorage.setItem('slow_user_logged', 'true');
+                    localStorage.setItem('slow_user_email', data.email);
+                    localStorage.setItem('slow_user_name', data.name);
+                    localStorage.setItem('slow_referral_code', data.referralCode || '');
+                    localStorage.setItem('slow_successful_referrals', data.successfulReferrals || 0);
+                    localStorage.setItem('slow_discount', data.discount || '0%');
+
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Błąd: ' + (data.error || 'Nieprawidłowe dane'));
+                }
+            } catch (err) {
+                console.error('Błąd sieci:', err);
+                alert('Nie udało się połączyć z serwerem.');
+            }
+        }
+
+        function forgotPassword() {
+            const email = document.getElementById('email-input').value.trim();
+            if (!email) {
+                alert('Wpisz swój adres e-mail w polu powyżej, a następnie kliknij "Nie pamiętam hasła".');
+                return;
+            }
+            window.location.href = `mailto:biuro@slowfoundation.com?subject=Reset%20hasła%20w%20Strefie%20SLoW&body=Dzień%20dobry,%0A%0Aproszę%20o%20pomoc%20w%20zresetowaniu%20hasła%20dla%20konta:%20${encodeURIComponent(email)}`;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+{
+  "name": "Strefa SLoW",
+  "short_name": "SLoW",
+  "description": "Strefa Legalnego Wypoczynku w Kórniku",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#1C2833",
+  "icons": [
+    {
+      "src": "logo-slow.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png"
+    }
+  ]
+}

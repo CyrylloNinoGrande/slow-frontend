@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1C2833">
+    <title>Dziennik SLoW - Praktyka Uważności</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Chart.js CDN do wykresów -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-[#121212] text-[#2C3531] flex justify-center items-center min-h-screen m-0">
+
+    <div class="w-full max-w-md bg-[#FAF8F5] h-screen flex flex-col justify-between shadow-2xl relative">
+
+        <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222] shrink-0">
+            <div class="w-36 flex items-center">
+                <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
+            </div>
+            <a href="index.html" class="text-xs text-[#A5B3C2] hover:text-white transition">✕ Zamknij</a>
+        </header>
+
+        <div class="px-6 pt-3 pb-1 shrink-0">
+            <h1 class="text-xl font-bold text-[#1C2E24]">Dziennik SLoW 🌿</h1>
+            <p class="text-xs text-[#7C8780]">Obserwuj swoje trendy i dbaj o uważność.</p>
+        </div>
+
+        <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
+
+            <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden space-y-3">
+                <div class="flex justify-between items-center">
+                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Wykres Trendu i Energii</span>
+                    <span class="text-sm">📈</span>
+                </div>
+                
+                <div class="flex items-baseline space-x-2">
+                    <span id="avg-mood-display" class="text-2xl font-bold text-[#F5CBA7]">-- / 10</span>
+                    <span class="text-[10px] text-[#A5B3C2]">Średnia energia</span>
+                </div>
+
+                <div class="bg-[#121821] p-3 rounded-xl relative h-44 w-full">
+                    <canvas id="moodChart"></canvas>
+                </div>
+
+                <div class="flex justify-between items-center text-[10px] text-[#A5B3C2] pt-1 px-1">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3 h-1 bg-[#F5CBA7] inline-block rounded-full"></span>
+                        <span>Dzienna energia</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3 h-1 bg-[#A9CCE3] inline-block rounded-full border-b border-dashed border-[#A9CCE3]"></span>
+                        <span>Kierunek zmian (Trend)</span>
+                    </div>
+                </div>
+
+                <p id="feedback-desc" class="text-[11px] text-[#D5D8DC] leading-relaxed pt-2 border-t border-[#2E4053]">
+                    Pobieranie Twoich danych z bazy...
+                </p>
+            </section>
+
+            <section id="insights-section" class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5 hidden">
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm">🌿</span>
+                    <span class="text-xs font-bold text-[#1C2E24]">Refleksje i spojrzenie SLoW</span>
+                </div>
+                <div id="insights-content" class="space-y-2 text-[11px] text-[#4A5550] leading-relaxed"></div>
+            </section>
+
+            <section class="bg-gradient-to-br from-[#FAF8F5] to-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
+                <div class="flex items-center space-x-2 mb-1.5">
+                    <span class="text-sm">💡</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#935116]">Mądrość i Ciekawostka SLoW</span>
+                </div>
+                <p id="trivia-text" class="text-xs text-[#1C2E24] leading-relaxed font-medium">
+                    Ładowanie inspiracji...
+                </p>
+            </section>
+
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="font-bold text-[#1C2E24]">Jak oceniasz dzisiejszą energię?</span>
+                    <span id="mood-label" class="font-bold text-[#E59866] text-sm">7 / 10</span>
+                </div>
+                <input type="range" id="mood-range" min="1" max="10" value="7" 
+                       oninput="updateMoodLabel(this.value)"
+                       class="w-full accent-[#E59866] cursor-pointer py-2">
+                <div class="flex justify-between text-[10px] text-[#7C8780]">
+                    <span>Wyczerpanie</span>
+                    <span>Pełnia sił</span>
+                </div>
+            </section>
+
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
+                <span class="text-xs font-bold text-[#1C2E24] block">Jakie odczucie dominuje? (Wybierz tagi)</span>
+                
+                <div class="flex flex-wrap gap-1.5" id="tags-container">
+                    <!-- Zasoby / Pozytywne (6 tagów) -->
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🔥 Ciepło</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">⚡ Pozytywna energia</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">✨ Lekkość</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌍 Poczucie uziemienia</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🍃 Głęboki relaks</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">💨 Spokojny oddech</button>
+                    
+                    <!-- Wskaźniki / Mniej pozytywne (6 tagów) -->
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌪️ Stres</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">⚡ Napięcie</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌊 Poddenerwowanie</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">❄️ Chłód</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🎯 Trudności z koncentracją</button>
+                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">☁️ Ciężka głowa</button>
+                </div>
+            </section>
+
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
+                <label class="block text-xs font-bold text-[#1C2E24]">Za co dzisiaj czujesz wdzięczność?</label>
+                <input type="text" id="journal-gratitude" maxlength="120" placeholder="np. za ciepłą herbatę i chwilę ciszy..." 
+                       class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
+            </section>
+
+            <button onclick="saveJournalEntry()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer">
+                Zapisz dzisiejszy wpis w Dzienniku 🌿
+            </button>
+
+        </main>
+
+        <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
+            <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+                <span class="text-lg">🏡</span>
+                <span class="text-[10px] font-medium mt-0.5">Strefa</span>
+            </a>
+            <a href="journal.html" class="flex flex-col items-center text-[#3A539B]">
+                <span class="text-lg">🧘‍♀️</span>
+                <span class="text-[10px] font-semibold mt-0.5">Dziennik</span>
+            </a>
+            <a href="reservation.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+                <span class="text-lg">📅</span>
+                <span class="text-[10px] font-medium mt-0.5">Rezerwacje</span>
+            </a>
+            <a href="profile.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+                <span class="text-lg">⚙️</span>
+                <span class="text-[10px] font-medium mt-0.5">Profil</span>
+            </a>
+        </nav>
+
+    </div>
+
+    <script>
+        const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+            ? 'http://localhost:3000' 
+            : 'https://slow-backend.onrender.com';
+
+        if (localStorage.getItem('slow_user_logged') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        let selectedTags = [];
+        let moodChartInstance = null;
+
+        function updateMoodLabel(val) {
+            document.getElementById('mood-label').innerText = `${val} / 10`;
+        }
+
+        function toggleTag(btn) {
+            const tagText = btn.innerText;
+            if (btn.classList.contains('bg-[#1C2833]')) {
+                btn.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
+                btn.classList.add('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
+                selectedTags = selectedTags.filter(t => t !== tagText);
+            } else {
+                btn.classList.add('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
+                btn.classList.remove('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
+                selectedTags.push(tagText);
+            }
+        }
+
+        async function loadUserStats() {
+            const userEmail = localStorage.getItem('slow_user_email');
+            if (!userEmail) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/journal/stats?email=${encodeURIComponent(userEmail)}`);
+                const data = await response.json();
+
+                if (data.hasData) {
+                    document.getElementById('avg-mood-display').innerText = `${data.averageMood} / 10`;
+                    document.getElementById('feedback-desc').innerText = `${data.trendMessage} (Wpisów w bazie: ${data.totalEntries})`;
+
+                    if (data.history && data.history.length > 0) {
+                        renderChart(data.history);
+                    }
+
+                    if (data.insights && data.insights.length > 0) {
+                        const insightsSection = document.getElementById('insights-section');
+                        const insightsContent = document.getElementById('insights-content');
+                        
+                        insightsContent.innerHTML = data.insights.map(text => `
+                            <div class="bg-[#FAF8F5] border border-[#E2DCD0] p-3 rounded-xl">
+                                <p>${text}</p>
+                            </div>
+                        `).join('');
+                        
+                        insightsSection.classList.remove('hidden');
+                    }
+                } else {
+                    document.getElementById('avg-mood-display').innerText = "Brak danych";
+                    document.getElementById('feedback-desc').innerText = data.message;
+                }
+            } catch (err) {
+                console.error('Błąd ładowania statystyk:', err);
+                document.getElementById('feedback-desc').innerText = "Nie udało się pobrać statystyk z bazy.";
+            }
+        }
+
+        function renderChart(historyData) {
+            const ctx = document.getElementById('moodChart').getContext('2d');
+            const labels = historyData.map(item => item.date);
+            const moods = historyData.map(item => item.mood);
+
+            const windowSize = 3;
+            const trendData = moods.map((val, index, arr) => {
+                if (index < windowSize - 1) {
+                    const slice = arr.slice(0, index + 1);
+                    const sum = slice.reduce((a, b) => a + b, 0);
+                    return (sum / slice.length).toFixed(1);
+                } else {
+                    const slice = arr.slice(index - windowSize + 1, index + 1);
+                    const sum = slice.reduce((a, b) => a + b, 0);
+                    return (sum / windowSize).toFixed(1);
+                }
+            });
+
+            if (moodChartInstance) moodChartInstance.destroy();
+
+            moodChartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Dzienna energia',
+                            data: moods,
+                            borderColor: '#F5CBA7',
+                            backgroundColor: 'rgba(245, 203, 167, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: true,
+                            pointBackgroundColor: '#E59866',
+                            pointRadius: 4,
+                            order: 2
+                        },
+                        {
+                            label: 'Ogólny kierunek (Trend)',
+                            data: trendData,
+                            borderColor: '#A9CCE3',
+                            borderWidth: 2.5,
+                            borderDash: [4, 4],
+                            tension: 0.4,
+                            fill: false,
+                            pointRadius: 0,
+                            order: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) label += ': ';
+                                    if (context.parsed.y !== null) label += context.parsed.y + ' / 10';
+                                    return label;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            min: 1, max: 10,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: { color: '#A5B3C2', font: { size: 10 } }
+                        },
+                        x: {
+                            grid: { display: false },
+                            ticks: { color: '#A5B3C2', font: { size: 9 }, maxTicksLimit: 5 }
+                        }
+                    }
+                }
+            });
+        }
+
+        async function loadSlowTrivia() {
+            try {
+                const res = await fetch(`${API_BASE}/api/journal/trivia`);
+                const data = await res.json();
+                if (data.success && data.trivia) {
+                    document.getElementById('trivia-text').innerText = data.trivia.text;
+                }
+            } catch (err) {
+                console.error('Błąd pobierania ciekawostki:', err);
+                document.getElementById('trivia-text').innerText = "Moksoterapia i homeopatia pomagają przywrócić naturalną równowagę organizmu.";
+            }
+        }
+
+        loadSlowTrivia();
+
+        async function saveJournalEntry() {
+            const userEmail = localStorage.getItem('slow_user_email');
+            if (!userEmail) {
+                alert('Musisz być zalogowany.');
+                return;
+            }
+
+            const mood = document.getElementById('mood-range').value;
+            const effect = selectedTags.join(', ');
+            const gratitude = document.getElementById('journal-gratitude').value.trim();
+
+            try {
+                const response = await fetch(`${API_BASE}/api/journal`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: userEmail, mood, effect, gratitude, reflection: '' })
+                });
+
+                const result = await response.json();
+                if (result.success) {
+                    alert('Twój wpis został zapisany w Dzienniku SLoW 🌿');
+                    window.location.href = 'index.html';
+                } else {
+                    alert('Błąd: ' + result.error);
+                }
+            } catch (err) {
+                console.error('Błąd sieci:', err);
+                alert('Nie udało się połączyć z serwerem.');
+            }
+        }
+
+        loadUserStats();
+    </script>
+</body>
+</html>
