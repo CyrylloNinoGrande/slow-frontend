@@ -208,38 +208,51 @@
 
         const packageNames = ['HomeoBalans', 'TCM', 'TCMx4', 'Balansx4', 'Pakiet TCM', 'Karnet TCMx4', 'Karnet Balansx4'];
 
-        function initReservationView() {
-            const testCard = document.getElementById('test-payment-card');
-            if (testCard && !ENABLE_TEST_PAYMENT) {
-                testCard.style.display = 'none';
+        async function initReservationView() {
+    const testCard = document.getElementById('test-payment-card');
+    if (testCard && !ENABLE_TEST_PAYMENT) {
+        testCard.style.display = 'none';
+    }
+
+    // Pobieramy aktualny rabat bezpośrednio z bazy danych przez backend
+    const userEmail = localStorage.getItem('slow_user_email');
+    if (userEmail) {
+        try {
+            const res = await fetch(`${API_BASE}/api/next-appointment?email=${encodeURIComponent(userEmail)}`);
+            const data = await res.json();
+            if (data.discount) {
+                userDiscountPercent = parseInt(data.discount.replace('%', '')) || 0;
+                document.getElementById('discount-display').innerText = data.discount;
             }
-
-            const discountStr = localStorage.getItem('slow_discount') || '0%';
-            userDiscountPercent = parseInt(discountStr.replace('%', '')) || 0;
-            
-            document.getElementById('discount-display').innerText = discountStr;
-            
-            const tomorrow = new Date();
-            tomorrow.setDate(tomorrow.getDate() + 1);
-            document.getElementById('reservation-date').valueAsDate = tomorrow;
-            
-            const defaultCard = ENABLE_TEST_PAYMENT ? testCard : document.querySelector('.service-card:not(#test-payment-card)');
-            if (defaultCard) {
-                defaultCard.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
-                if (ENABLE_TEST_PAYMENT) {
-                    defaultCard.classList.remove('bg-[#FFF3E0]');
-                } else {
-                    defaultCard.classList.remove('bg-[#F0ECE1]');
-                }
-            }
-
-            document.getElementById('selected-service-name').innerText = selectedServiceName;
-
-            loadAvailableSlots();
-            updatePriceDisplay();
-
-            document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
+        } catch (err) {
+            console.error('Błąd pobierania danych o rabacie z bazy:', err);
+            // Awaryjny fallback do 0%
+            userDiscountPercent = 0;
+            document.getElementById('discount-display').innerText = '0%';
         }
+    }
+    
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    document.getElementById('reservation-date').valueAsDate = tomorrow;
+    
+    const defaultCard = ENABLE_TEST_PAYMENT ? testCard : document.querySelector('.service-card:not(#test-payment-card)');
+    if (defaultCard) {
+        defaultCard.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
+        if (ENABLE_TEST_PAYMENT) {
+            defaultCard.classList.remove('bg-[#FFF3E0]');
+        } else {
+            defaultCard.classList.remove('bg-[#F0ECE1]');
+        }
+    }
+
+    document.getElementById('selected-service-name').innerText = selectedServiceName;
+
+    loadAvailableSlots();
+    updatePriceDisplay();
+
+    document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
+}
 
         function switchTab(tab) {
             const tabServices = document.getElementById('tab-services');
