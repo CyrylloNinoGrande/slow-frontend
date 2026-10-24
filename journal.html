@@ -33,30 +33,28 @@
 
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
+            <!-- Wykres z filtrami i falą w tle -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Wykres Trendu i Energii</span>
+                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Analiza Trendów</span>
                     <span class="text-sm">📈</span>
                 </div>
                 
-                <div class="flex items-baseline space-x-2">
+                <!-- Przyciski filtrów wykresu -->
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                    <button onclick="filterChart('all')" id="filter-all" class="chart-filter-btn text-[10px] bg-[#2E4053] text-[#FAF8F5] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">Wszystko</button>
+                    <button onclick="filterChart('body')" id="filter-body" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">💪 Ciało</button>
+                    <button onclick="filterChart('mind')" id="filter-mind" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🧠 Umysł</button>
+                    <button onclick="filterChart('wave')" id="filter-wave" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🌊 Fala Tła</button>
+                </div>
+
+                <div class="flex items-baseline space-x-2 pt-1">
                     <span id="avg-mood-display" class="text-2xl font-bold text-[#F5CBA7]">-- / 10</span>
-                    <span class="text-[10px] text-[#A5B3C2]">Średnia energia</span>
+                    <span class="text-[10px] text-[#A5B3C2]">Średnia witalność</span>
                 </div>
 
                 <div class="bg-[#121821] p-3 rounded-xl relative h-44 w-full">
                     <canvas id="moodChart"></canvas>
-                </div>
-
-                <div class="flex justify-between items-center text-[10px] text-[#A5B3C2] pt-1 px-1">
-                    <div class="flex items-center space-x-1.5">
-                        <span class="w-3 h-1 bg-[#F5CBA7] inline-block rounded-full"></span>
-                        <span>Dzienna energia</span>
-                    </div>
-                    <div class="flex items-center space-x-1.5">
-                        <span class="w-3 h-1 bg-[#A9CCE3] inline-block rounded-full border-b border-dashed border-[#A9CCE3]"></span>
-                        <span>Kierunek zmian (Trend)</span>
-                    </div>
                 </div>
 
                 <p id="feedback-desc" class="text-[11px] text-[#D5D8DC] leading-relaxed pt-2 border-t border-[#2E4053]">
@@ -72,27 +70,39 @@
                 <div id="insights-content" class="space-y-2 text-[11px] text-[#4A5550] leading-relaxed"></div>
             </section>
 
-            <section class="bg-gradient-to-br from-[#FAF8F5] to-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
-                <div class="flex items-center space-x-2 mb-1.5">
-                    <span class="text-sm">💡</span>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#935116]">Mądrość i Ciekawostka SLoW</span>
+            <!-- Podział: Ciało i Umysł -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-4">
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-[#1C2E24]">💪 Witalność fizyczna (Ciało)</span>
+                        <span id="physical-label" class="font-bold text-[#E59866] text-sm">7 / 10</span>
+                    </div>
+                    <input type="range" id="physical-range" min="1" max="10" value="7" 
+                           oninput="updateLabel('physical', this.value)"
+                           class="w-full accent-[#E59866] cursor-pointer py-1">
                 </div>
-                <p id="trivia-text" class="text-xs text-[#1C2E24] leading-relaxed font-medium">
-                    Ładowanie inspiracji...
-                </p>
-            </section>
 
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="font-bold text-[#1C2E24]">Jak oceniasz dzisiejszą energię?</span>
-                    <span id="mood-label" class="font-bold text-[#E59866] text-sm">7 / 10</span>
+                <div class="space-y-2 pt-2 border-t border-[#F0ECE1]">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="font-bold text-[#1C2E24]">🧠 Spokój umysłu (Głowa)</span>
+                        <span id="mental-label" class="font-bold text-[#3A539B] text-sm">7 / 10</span>
+                    </div>
+                    <input type="range" id="mental-range" min="1" max="10" value="7" 
+                           oninput="updateLabel('mental', this.value)"
+                           class="w-full accent-[#3A539B] cursor-pointer py-1">
                 </div>
-                <input type="range" id="mood-range" min="1" max="10" value="7" 
-                       oninput="updateMoodLabel(this.value)"
-                       class="w-full accent-[#E59866] cursor-pointer py-2">
-                <div class="flex justify-between text-[10px] text-[#7C8780]">
-                    <span>Wyczerpanie</span>
-                    <span>Pełnia sił</span>
+            </section>
+                
+            <!-- Wybór kontekstu / obszaru dnia -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
+                <span class="text-xs font-bold text-[#1C2E24] block">Co głównie wypełniało dzisiejszy dzień? (Wybierz kontekst)</span>
+                
+                <div class="flex flex-wrap gap-1.5" id="context-container">
+                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">💻 Praca / Ekran</button>
+                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌳 Ruch / Spacer</button>
+                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">👥 Ludzie / Spotkania</button>
+                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🧘 Czas dla siebie</button>
+                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🏠 Dom / Obowiązki</button>
                 </div>
             </section>
 
@@ -100,15 +110,12 @@
                 <span class="text-xs font-bold text-[#1C2E24] block">Jakie odczucie dominuje? (Wybierz tagi)</span>
                 
                 <div class="flex flex-wrap gap-1.5" id="tags-container">
-                    <!-- Zasoby / Pozytywne (6 tagów) -->
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🔥 Ciepło</button>
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">⚡ Pozytywna energia</button>
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">✨ Lekkość</button>
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌍 Poczucie uziemienia</button>
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🍃 Głęboki relaks</button>
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">💨 Spokojny oddech</button>
-                    
-                    <!-- Wskaźniki / Mniej pozytywne (6 tagów) -->
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌪️ Stres</button>
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">⚡ Napięcie</button>
                     <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌊 Poddenerwowanie</button>
@@ -161,10 +168,22 @@
         }
 
         let selectedTags = [];
+        let selectedContext = '';
         let moodChartInstance = null;
+        let globalHistoryData = [];
 
-        function updateMoodLabel(val) {
-            document.getElementById('mood-label').innerText = `${val} / 10`;
+        function updateLabel(type, val) {
+            document.getElementById(`${type}-label`).innerText = `${val} / 10`;
+        }
+
+        function selectContext(btn) {
+            document.querySelectorAll('.context-btn').forEach(b => {
+                b.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
+                b.classList.add('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
+            });
+            btn.classList.add('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
+            btn.classList.remove('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
+            selectedContext = btn.innerText;
         }
 
         function toggleTag(btn) {
@@ -193,7 +212,8 @@
                     document.getElementById('feedback-desc').innerText = `${data.trendMessage} (Wpisów w bazie: ${data.totalEntries})`;
 
                     if (data.history && data.history.length > 0) {
-                        renderChart(data.history);
+                        globalHistoryData = data.history;
+                        renderChart(globalHistoryData, 'all');
                     }
 
                     if (data.insights && data.insights.length > 0) {
@@ -218,56 +238,80 @@
             }
         }
 
-        function renderChart(historyData) {
+        function filterChart(type) {
+            document.querySelectorAll('.chart-filter-btn').forEach(b => {
+                b.classList.remove('bg-[#2E4053]', 'text-[#FAF8F5]');
+                b.classList.add('bg-[#121821]', 'text-[#A5B3C2]');
+            });
+            const activeBtn = document.getElementById(`filter-${type}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('bg-[#121821]', 'text-[#A5B3C2]');
+                activeBtn.classList.add('bg-[#2E4053]', 'text-[#FAF8F5]');
+            }
+            if (globalHistoryData.length > 0) {
+                renderChart(globalHistoryData, type);
+            }
+        }
+
+        function renderChart(historyData, filter = 'all') {
             const ctx = document.getElementById('moodChart').getContext('2d');
             const labels = historyData.map(item => item.date);
-            const moods = historyData.map(item => item.mood);
+            
+            const physicalData = historyData.map(item => item.physical !== undefined ? item.physical : item.mood);
+            const mentalData = historyData.map(item => item.mental !== undefined ? item.mental : item.mood);
+            const waveData = physicalData.map((p, idx) => Number(((p + mentalData[idx]) / 2).toFixed(1)));
 
-            const windowSize = 3;
-            const trendData = moods.map((val, index, arr) => {
-                if (index < windowSize - 1) {
-                    const slice = arr.slice(0, index + 1);
-                    const sum = slice.reduce((a, b) => a + b, 0);
-                    return (sum / slice.length).toFixed(1);
-                } else {
-                    const slice = arr.slice(index - windowSize + 1, index + 1);
-                    const sum = slice.reduce((a, b) => a + b, 0);
-                    return (sum / windowSize).toFixed(1);
-                }
-            });
+            const datasets = [];
+
+            if (filter === 'all' || filter === 'wave') {
+                datasets.push({
+                    label: 'Fala Wypadkowa',
+                    data: waveData,
+                    borderColor: 'rgba(229, 152, 102, 0.4)',
+                    backgroundColor: 'rgba(229, 152, 102, 0.15)',
+                    borderWidth: 1.5,
+                    tension: 0.4,
+                    fill: true,
+                    pointRadius: 0,
+                    order: 3
+                });
+            }
+
+            if (filter === 'all' || filter === 'body') {
+                datasets.push({
+                    label: 'Ciało',
+                    data: physicalData,
+                    borderColor: '#E59866',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: false,
+                    pointBackgroundColor: '#E59866',
+                    pointRadius: 4,
+                    order: 1
+                });
+            }
+
+            if (filter === 'all' || filter === 'mind') {
+                datasets.push({
+                    label: 'Umysł',
+                    data: mentalData,
+                    borderColor: '#A9CCE3',
+                    backgroundColor: 'transparent',
+                    borderWidth: 2,
+                    tension: 0.3,
+                    fill: false,
+                    pointBackgroundColor: '#3A539B',
+                    pointRadius: 4,
+                    order: 2
+                });
+            }
 
             if (moodChartInstance) moodChartInstance.destroy();
 
             moodChartInstance = new Chart(ctx, {
                 type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [
-                        {
-                            label: 'Dzienna energia',
-                            data: moods,
-                            borderColor: '#F5CBA7',
-                            backgroundColor: 'rgba(245, 203, 167, 0.05)',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            fill: true,
-                            pointBackgroundColor: '#E59866',
-                            pointRadius: 4,
-                            order: 2
-                        },
-                        {
-                            label: 'Ogólny kierunek (Trend)',
-                            data: trendData,
-                            borderColor: '#A9CCE3',
-                            borderWidth: 2.5,
-                            borderDash: [4, 4],
-                            tension: 0.4,
-                            fill: false,
-                            pointRadius: 0,
-                            order: 1
-                        }
-                    ]
-                },
+                data: { labels: labels, datasets: datasets },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -299,20 +343,13 @@
             });
         }
 
-        async function loadSlowTrivia() {
-            try {
-                const res = await fetch(`${API_BASE}/api/journal/trivia`);
-                const data = await res.json();
-                if (data.success && data.trivia) {
-                    document.getElementById('trivia-text').innerText = data.trivia.text;
-                }
-            } catch (err) {
-                console.error('Błąd pobierania ciekawostki:', err);
-                document.getElementById('trivia-text').innerText = "Moksoterapia i homeopatia pomagają przywrócić naturalną równowagę organizmu.";
-            }
+        // Automatyczne ustalanie pory dnia na podstawie aktualnej godziny
+        function getTimeOfDay() {
+            const hour = new Date().getHours();
+            if (hour >= 5 && hour < 12) return '🌅 Poranek';
+            if (hour >= 12 && hour < 18) return '☀️ Popołudnie';
+            return '🌙 Wieczór';
         }
-
-        loadSlowTrivia();
 
         async function saveJournalEntry() {
             const userEmail = localStorage.getItem('slow_user_email');
@@ -321,15 +358,29 @@
                 return;
             }
 
-            const mood = document.getElementById('mood-range').value;
+            const physical = document.getElementById('physical-range').value;
+            const mental = document.getElementById('mental-range').value;
+            const mood = Math.round((parseInt(physical) + parseInt(mental)) / 2);
             const effect = selectedTags.join(', ');
             const gratitude = document.getElementById('journal-gratitude').value.trim();
+            const context = selectedContext;
+            const timeOfDay = getTimeOfDay(); // automatycznie pobierana pora dnia
 
             try {
                 const response = await fetch(`${API_BASE}/api/journal`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: userEmail, mood, effect, gratitude, reflection: '' })
+                    body: JSON.stringify({ 
+                        email: userEmail, 
+                        mood, 
+                        physical, 
+                        mental, 
+                        effect, 
+                        gratitude, 
+                        context, 
+                        timeOfDay,
+                        reflection: '' 
+                    })
                 });
 
                 const result = await response.json();

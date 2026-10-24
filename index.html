@@ -15,10 +15,9 @@
 </head>
 <body class="bg-[#121212] text-[#2C3531] flex justify-center items-center min-h-screen m-0">
 
-    <!-- Główny kontener aplikacji zablokowany na wysokości ekranu -->
     <div class="w-full max-w-md bg-[#FAF8F5] h-screen flex flex-col justify-between shadow-2xl relative">
 
-        <!-- Nagłówek (stały u góry) -->
+        <!-- Nagłówek -->
         <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222] shrink-0">
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
@@ -38,9 +37,10 @@
             <button onclick="logout()" class="text-[10px] text-[#C0392B] underline cursor-pointer">Wyloguj</button>
         </div>
 
-        <!-- Treść przewijalna (z dużym paddingiem na dole pb-24, żeby nic nie schodziło pod pasek) -->
+        <!-- Treść przewijalna -->
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
+            <!-- Program Poleceń -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
                 <div class="flex justify-between items-start mb-2">
                     <div>
@@ -73,6 +73,7 @@
                 </div>
             </section>
 
+            <!-- Rezerwacja -->
             <section>
                 <a href="reservation.html" class="block bg-[#E59866] hover:bg-[#DC7633] text-white p-4 rounded-2xl shadow-md transition text-center group">
                     <div class="font-bold text-sm mb-0.5">Zarezerwuj Legalny Wypoczynek</div>
@@ -80,6 +81,7 @@
                 </a>
             </section>
 
+            <!-- Najbliższa wizyta -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 flex items-center justify-between shadow-xs">
                 <div class="flex items-center space-x-3">
                     <div class="w-10 h-10 rounded-xl bg-[#F0ECE1] flex items-center justify-center text-lg">
@@ -93,6 +95,18 @@
                 <span id="next-visit-badge" class="text-xs font-medium text-[#7C8780] bg-[#EFECE6] px-2.5 py-1 rounded-lg">Sprawdzam</span>
             </section>
 
+            <!-- Mądrość i Ciekawostka SLoW (Przeniesiona z dziennika) -->
+            <section class="bg-gradient-to-br from-[#FAF8F5] to-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
+                <div class="flex items-center space-x-2 mb-1.5">
+                    <span class="text-sm">💡</span>
+                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#935116]">Mądrość i Ciekawostka SLoW</span>
+                </div>
+                <p id="trivia-text" class="text-xs text-[#1C2E24] leading-relaxed font-medium">
+                    Ładowanie inspiracji...
+                </p>
+            </section>
+
+            <!-- Skrót do Dziennika -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 flex items-center justify-between shadow-md">
                 <div class="space-y-1">
                     <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Codzienna Praktyka</span>
@@ -106,7 +120,7 @@
 
         </main>
 
-        <!-- Dolny pasek nawigacyjny z pozycją FIXED (zawsze przypięty do dołu ekranu pod kciukiem) -->
+        <!-- Dolna nawigacja -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
             <a href="index.html" class="flex flex-col items-center text-[#3A539B]">
                 <span class="text-lg">🏡</span>
@@ -171,45 +185,20 @@
             }
         }
 
-        function urlBase64ToUint8Array(base64String) {
-            const padding = '='.repeat((4 - base64String.length % 4) % 4);
-            const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
-            const rawData = window.atob(base64);
-            const outputArray = new Uint8Array(rawData.length);
-            for (let i = 0; i < rawData.length; ++i) {
-                outputArray[i] = rawData.charCodeAt(i);
-            }
-            return outputArray;
-        }
-
-        async function checkAndRequestPushAfterLogin() {
-            if (!('serviceWorker' in navigator)) return;
-            
-            if (Notification.permission === 'default') {
-                try {
-                    const registration = await navigator.serviceWorker.register('sw.js');
-                    const permission = await Notification.requestPermission();
-                    
-                    if (permission === 'granted') {
-                        const publicVapidKey = 'BKISh9djnpty_DFXT1wC5ZRj-t4BUEi1KpcE4DcXkFl8zcVA0NWqn5yU6e3ereN6wPq2dF_HSjVe1vw79OklO64';
-                        const subscription = await registration.pushManager.subscribe({
-                            userVisibleOnly: true,
-                            applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
-                        });
-
-                        const userEmail = localStorage.getItem('slow_user_email') || 'nieznany@slow.pl';
-
-                        await fetch(`${API_BASE}/api/push/subscribe`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ email: userEmail, subscription })
-                        });
-                    }
-                } catch (err) {
-                    console.error('Błąd automatycznej subskrypcji push:', err);
+        async function loadSlowTrivia() {
+            try {
+                const res = await fetch(`${API_BASE}/api/journal/trivia`);
+                const data = await res.json();
+                if (data.success && data.trivia) {
+                    document.getElementById('trivia-text').innerText = data.trivia.text;
                 }
+            } catch (err) {
+                console.error('Błąd pobierania ciekawostki:', err);
+                document.getElementById('trivia-text').innerText = "Moksoterapia i homeopatia pomagają przywrócić naturalną równowagę organizmu.";
             }
         }
+
+        loadSlowTrivia();
 
         async function loadUserProfile() {
             const userName = localStorage.getItem('slow_user_name') || 'Klient';
@@ -218,7 +207,6 @@
             const greetingEl = document.getElementById('user-greeting');
             if (greetingEl) greetingEl.innerText = `Cześć, ${userName} 🌿`;
 
-            checkAndRequestPushAfterLogin();
             if (!userEmail) return;
 
             try {
