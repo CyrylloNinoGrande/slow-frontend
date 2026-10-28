@@ -31,6 +31,7 @@
 
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
+            <!-- Wybór usług / pakietów -->
             <section class="space-y-3">
                 <div class="grid grid-cols-2 gap-2 p-1 bg-[#EFECE6] rounded-2xl border border-[#E2DCD0]">
                     <button onclick="switchTab('services')" id="tab-services" class="py-2.5 px-3 rounded-xl text-xs font-extrabold transition shadow-xs bg-[#1C2833] text-white cursor-pointer">
@@ -134,6 +135,7 @@
                 </div>
             </section>
 
+            <!-- Wybór daty i godziny -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
                 <label class="block text-xs font-bold text-[#1C2E24]">Wybierz datę wizyty:</label>
                 <input type="date" id="reservation-date" class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
@@ -144,9 +146,10 @@
                 </div>
             </section>
 
+            <!-- Podsumowanie koszyka -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md space-y-2">
                 <div class="text-[11px] text-[#A5B3C2] pb-1 border-b border-[#2E4053]">
-                    Wybrano: <strong id="selected-service-name" class="text-white">Testowa Płatność PayU</strong>
+                    Wybrana usługa / koszyk: <strong id="selected-service-name" class="text-white">Testowa Płatność PayU</strong>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-[#D5D8DC]">Cena bazowa:</span>
@@ -162,6 +165,17 @@
                 </div>
             </section>
 
+            <!-- Zgody formalne (Wymóg PayU / RODO) -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-3.5 shadow-xs space-y-2.5">
+                <label class="flex items-start space-x-2.5 cursor-pointer">
+                    <input type="checkbox" id="terms-checkbox" class="mt-0.5 accent-[#1C2833] w-4 h-4 cursor-pointer">
+                    <span class="text-[11px] text-[#55605B] leading-relaxed">
+                        Akceptuję postanowienia <a href="regulamin.html" target="_blank" class="text-[#3A539B] underline font-bold">Regulaminu Serwisu i Polityki Prywatności (RODO)</a> oraz wyrażam zgodę na przetwarzanie danych.
+    </span>
+                </label>
+            </section>
+
+            <!-- Przycisk płatności -->
             <button onclick="startPayUPayment()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center space-x-2">
                 <span>💳</span>
                 <span>Przejdź do bezpiecznej płatności PayU</span>
@@ -209,50 +223,48 @@
         const packageNames = ['HomeoBalans', 'TCM', 'TCMx4', 'Balansx4', 'Pakiet TCM', 'Karnet TCMx4', 'Karnet Balansx4'];
 
         async function initReservationView() {
-    const testCard = document.getElementById('test-payment-card');
-    if (testCard && !ENABLE_TEST_PAYMENT) {
-        testCard.style.display = 'none';
-    }
-
-    // Pobieramy aktualny rabat bezpośrednio z bazy danych przez backend
-    const userEmail = localStorage.getItem('slow_user_email');
-    if (userEmail) {
-        try {
-            const res = await fetch(`${API_BASE}/api/next-appointment?email=${encodeURIComponent(userEmail)}`);
-            const data = await res.json();
-            if (data.discount) {
-                userDiscountPercent = parseInt(data.discount.replace('%', '')) || 0;
-                document.getElementById('discount-display').innerText = data.discount;
+            const testCard = document.getElementById('test-payment-card');
+            if (testCard && !ENABLE_TEST_PAYMENT) {
+                testCard.style.display = 'none';
             }
-        } catch (err) {
-            console.error('Błąd pobierania danych o rabacie z bazy:', err);
-            // Awaryjny fallback do 0%
-            userDiscountPercent = 0;
-            document.getElementById('discount-display').innerText = '0%';
+
+            const userEmail = localStorage.getItem('slow_user_email');
+            if (userEmail) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/next-appointment?email=${encodeURIComponent(userEmail)}`);
+                    const data = await res.json();
+                    if (data.discount) {
+                        userDiscountPercent = parseInt(data.discount.replace('%', '')) || 0;
+                        document.getElementById('discount-display').innerText = data.discount;
+                    }
+                } catch (err) {
+                    console.error('Błąd pobierania danych o rabacie z bazy:', err);
+                    userDiscountPercent = 0;
+                    document.getElementById('discount-display').innerText = '0%';
+                }
+            }
+            
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('reservation-date').valueAsDate = tomorrow;
+            
+            const defaultCard = ENABLE_TEST_PAYMENT ? testCard : document.querySelector('.service-card:not(#test-payment-card)');
+            if (defaultCard) {
+                defaultCard.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
+                if (ENABLE_TEST_PAYMENT) {
+                    defaultCard.classList.remove('bg-[#FFF3E0]');
+                } else {
+                    defaultCard.classList.remove('bg-[#F0ECE1]');
+                }
+            }
+
+            document.getElementById('selected-service-name').innerText = selectedServiceName;
+
+            loadAvailableSlots();
+            updatePriceDisplay();
+
+            document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
         }
-    }
-    
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('reservation-date').valueAsDate = tomorrow;
-    
-    const defaultCard = ENABLE_TEST_PAYMENT ? testCard : document.querySelector('.service-card:not(#test-payment-card)');
-    if (defaultCard) {
-        defaultCard.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
-        if (ENABLE_TEST_PAYMENT) {
-            defaultCard.classList.remove('bg-[#FFF3E0]');
-        } else {
-            defaultCard.classList.remove('bg-[#F0ECE1]');
-        }
-    }
-
-    document.getElementById('selected-service-name').innerText = selectedServiceName;
-
-    loadAvailableSlots();
-    updatePriceDisplay();
-
-    document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
-}
 
         function switchTab(tab) {
             const tabServices = document.getElementById('tab-services');
@@ -342,6 +354,13 @@
         }
 
         async function startPayUPayment() {
+            // Weryfikacja zgody RODO / Regulaminu (Wymóg audytu PayU)
+            const termsChecked = document.getElementById('terms-checkbox').checked;
+            if (!termsChecked) {
+                alert('Musisz zaakceptować Regulamin Serwisu oraz Politykę Prywatności, aby przejść do płatności.');
+                return;
+            }
+
             const userEmail = localStorage.getItem('slow_user_email');
             
             const isPackage = packageNames.some(pkg => selectedServiceName.toLowerCase().includes(pkg.toLowerCase()));
