@@ -5,11 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1C2833">
-    <title>Dziennik SLoW - Praktyka Uważności</title>
+    <title>Profil i Ustawienia - Strefa SLoW</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-    <!-- Chart.js CDN do wykresów -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -19,140 +17,162 @@
 
     <div class="w-full max-w-md bg-[#FAF8F5] h-screen flex flex-col justify-between shadow-2xl relative">
 
+        <!-- Nagłówek -->
         <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222] shrink-0">
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
             </div>
-            <a href="index.html" class="text-xs text-[#A5B3C2] hover:text-white transition">✕ Zamknij</a>
+            <div class="bg-gradient-to-r from-[#D35400] to-[#E59866] px-3.5 py-1.5 rounded-full flex items-center space-x-1.5 shadow-sm">
+                <span class="text-xs">🌿</span>
+                <span class="text-xs font-bold text-white">Strefa SLoW</span>
+            </div>
         </header>
 
-        <div class="px-6 pt-3 pb-1 shrink-0">
-            <h1 class="text-xl font-bold text-[#1C2E24]">Dziennik SLoW 🌿</h1>
-            <p class="text-xs text-[#7C8780]">Obserwuj swoje trendy i dbaj o uważność.</p>
+        <!-- Tytuł -->
+        <div class="px-6 pt-3 pb-1 flex justify-between items-center shrink-0">
+            <div>
+                <h1 class="text-lg font-bold text-[#1C2E24]">Twój Profil i Konto ✨</h1>
+                <p class="text-xs text-[#7C8780]">Zarządzaj swoimi danymi i sprawdź statystyki.</p>
+            </div>
+            <button onclick="logout()" class="text-[11px] font-semibold text-white bg-[#C0392B] hover:bg-[#A93226] px-3 py-1.5 rounded-xl transition cursor-pointer shadow-xs">Wyloguj</button>
         </div>
 
-        <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
+        <!-- Główna zawartość (przewijalna) -->
+        <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2 text-xs">
 
-            <!-- Wykres z filtrami i średnią ogólną -->
-            <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden space-y-3">
-                <div class="flex justify-between items-center">
-                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Analiza Trendów</span>
-                    <span class="text-sm">📈</span>
+            <!-- Kafel Użytkownika i Edycja -->
+            <section class="bg-white border-2 border-[#E59866]/30 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-[#E59866]/10 rounded-full blur-xl pointer-events-none"></div>
+                <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-[#F0ECE1]">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#E59866] to-[#D35400] text-white flex items-center justify-center text-xl font-bold shadow-sm">
+                        <span id="profile-initial">S</span>
+                    </div>
+                    <div>
+                        <h3 id="profile-name-display" class="text-sm font-bold text-[#1C2E24]">Ładowanie...</h3>
+                        <p id="profile-email-display" class="text-xs text-[#7C8780]">...</p>
+                    </div>
+                </div>
+
+                <div class="space-y-2.5">
+                    <div>
+                        <label class="block text-[10px] font-bold text-[#7C8780] uppercase tracking-wider mb-1">Twoje Imię:</label>
+                        <input type="text" id="edit-name" class="w-full px-3 py-2 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] bg-[#FAF8F5] focus:outline-none focus:border-[#E59866]">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] font-bold text-[#7C8780] uppercase tracking-wider mb-1">Numer telefonu (kontaktowy):</label>
+                        <input type="text" id="edit-phone" class="w-full px-3 py-2 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] bg-[#FAF8F5] focus:outline-none focus:border-[#E59866]">
+                    </div>
+                    <button onclick="saveProfileChanges()" class="w-full mt-1 bg-[#1C2833] hover:bg-[#2E4053] text-white py-2 rounded-xl text-xs font-semibold transition cursor-pointer">
+                        Zapisz zmiany w profilu 💾
+                    </button>
+                </div>
+            </section>
+
+            <!-- Oficjalne Dane Rejestrowe Fundacji SLoW (Wymóg PayU i Prawny) -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-sm space-y-2">
+                <div class="flex items-center space-x-2 pb-1 border-b border-[#F0ECE1]">
+                    <span class="text-sm">🏛️</span>
+                    <h3 class="text-xs font-bold text-[#1C2E24] uppercase tracking-wider">Dane Rejestrowe Operatora</h3>
+                </div>
+                <div class="space-y-1 text-[#55605B] leading-relaxed">
+                    <p><strong>Nazwa:</strong> FUNDACJA SLOW</p>
+                    <p><strong>Siedziba:</strong> ul. Kazimierza Fludry 17 / 2, 62-035 Kórnik</p>
+                    <p><strong>Miejsce świadczenia usług:</strong> ul. Młyńska 34a, 62-035 Kórnik</p>
+                    <p><strong>NIP:</strong> 7773458851</p>
+                    <p><strong>REGON:</strong> 543460385</p>
+                    <p class="pt-1 text-[10px] text-[#7C8780]">Kontakt: <a href="mailto:biuro@slowfoundation.com" class="text-[#3A539B] underline">biuro@slowfoundation.com</a>[cite: 7]</p>
+                </div>
+            </section>
+
+            <!-- Zgody Klienta (RODO / Regulamin) -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-sm space-y-2">
+                <div class="flex items-center space-x-2 pb-1 border-b border-[#F0ECE1]">
+                    <span class="text-sm">🛡️</span>
+                    <h3 class="text-xs font-bold text-[#1C2E24] uppercase tracking-wider">Twoje Zgody i Prywatność (RODO)</h3>
+                </div>
+                <div class="space-y-2 text-[11px] text-[#55605B] leading-relaxed">
+                    <div class="flex items-start space-x-2">
+                        <span class="text-emerald-600 font-bold shrink-0">✓</span>
+                        <span>Akceptacja Regulaminu Serwisu oraz Polityki Prywatności (Zgoda udzielona podczas rejestracji/rezerwacji).</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <span class="text-emerald-600 font-bold shrink-0">✓</span>
+                        <span>Zgoda na przetwarzanie danych osobowych w celu obsługi rezerwacji oraz programu poleceń.</span>
+                    </div>
+                    <p class="pt-1 text-[10px] text-[#7C8780]">Masz prawo do wglądu, sprostowania oraz żądania usunięcia swoich danych. Skontaktuj się z nami mailowo w celu realizacji praw.</p>
+                </div>
+            </section>
+
+            <!-- Statystyki Dziennika Uważności -->
+            <section class="bg-gradient-to-br from-[#1C2833] to-[#2E4053] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden">
+                <div class="flex justify-between items-center mb-2">
+                    <span class="text-[9px] uppercase tracking-wider bg-[#D35400] text-white px-2 py-0.5 rounded-md font-bold">Twoja Praktyka SLoW</span>
+                    <span class="text-base">🧘‍♀️</span>
                 </div>
                 
-                <!-- Przyciski filtrów wykresu -->
-                <div class="flex flex-wrap gap-1.5 pt-1">
-                    <button onclick="filterChart('all')" id="filter-all" class="chart-filter-btn text-[10px] bg-[#2E4053] text-[#FAF8F5] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">Wszystko</button>
-                    <button onclick="filterChart('body')" id="filter-body" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">💪 Ciało</button>
-                    <button onclick="filterChart('mind')" id="filter-mind" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🧠 Umysł</button>
-                    <button onclick="filterChart('wave')" id="filter-wave" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🌊 Średnia Ogólna</button>
+                <div class="grid grid-cols-2 gap-3 my-3">
+                    <div class="bg-black/20 p-2.5 rounded-xl border border-white/10">
+                        <span class="text-[10px] text-[#A5B3C2] block">Średnia energia</span>
+                        <span id="profile-avg-mood" class="text-xl font-bold text-[#F5CBA7]">-- / 10</span>
+                    </div>
+                    <div class="bg-black/20 p-2.5 rounded-xl border border-white/10">
+                        <span class="text-[10px] text-[#A5B3C2] block">Wpisy w dzienniku</span>
+                        <span id="profile-total-entries" class="text-xl font-bold text-[#E59866]">0</span>
+                    </div>
                 </div>
 
-                <div class="flex items-baseline space-x-2 pt-1">
-                    <span id="avg-mood-display" class="text-2xl font-bold text-[#F5CBA7]">-- / 10</span>
-                    <span class="text-[10px] text-[#A5B3C2]">Średnia witalność</span>
-                </div>
-
-                <div class="bg-[#121821] p-3 rounded-xl relative h-44 w-full">
-                    <canvas id="moodChart"></canvas>
-                </div>
-
-                <p id="feedback-desc" class="text-[11px] text-[#D5D8DC] leading-relaxed pt-2 border-t border-[#2E4053]">
-                    Pobieranie Twoich danych z bazy...
+                <p id="profile-journal-trend" class="text-[11px] text-[#D5D8DC] leading-relaxed pt-2 border-t border-white/10">
+                    Ładowanie Twoich statystyk uważności...
                 </p>
             </section>
 
-            <section id="insights-section" class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5 hidden">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm">🌿</span>
-                    <span class="text-xs font-bold text-[#1C2E24]">Refleksje i spojrzenie SLoW</span>
-                </div>
-                <div id="insights-content" class="space-y-2 text-[11px] text-[#4A5550] leading-relaxed"></div>
-            </section>
-
-            <!-- Podział: Ciało i Umysł -->
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-4">
+            <!-- Wsparcie, Pomoc i Powiadomienia -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-sm space-y-3">
+                <h3 class="text-xs font-bold text-[#1C2E24] uppercase tracking-wider">Wsparcie i Pomoc</h3>
+                
                 <div class="space-y-2">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="font-bold text-[#1C2E24]">💪 Witalność fizyczna (Ciało)</span>
-                        <span id="physical-label" class="font-bold text-[#E59866] text-sm">7 / 10</span>
-                    </div>
-                    <input type="range" id="physical-range" min="1" max="10" value="7" 
-                           oninput="updateLabel('physical', this.value)"
-                           class="w-full accent-[#E59866] cursor-pointer py-1">
-                </div>
+                    <a href="tel:+48661796866" class="flex items-center justify-between p-2.5 bg-[#FAF8F5] hover:bg-[#F0ECE1] rounded-xl border border-[#E2DCD0] transition text-xs font-medium text-[#1C2E24]">
+                        <div class="flex items-center space-x-2.5">
+                            <span>📞</span>
+                            <span>Zadzwoń: +48 661 796 866</span>
+                        </div>
+                        <span class="text-[#7C8780]">→</span>
+                    </a>
+                    
+                    <a href="mailto:biuro@slowfoundation.com" class="flex items-center justify-between p-2.5 bg-[#FAF8F5] hover:bg-[#F0ECE1] rounded-xl border border-[#E2DCD0] transition text-xs font-medium text-[#1C2E24]">
+                        <div class="flex items-center space-x-2.5">
+                            <span>✉️</span>
+                            <span>biuro@slowfoundation.com</span>
+                        </div>
+                        <span class="text-[#7C8780]">→</span>
+                    </a>
 
-                <div class="space-y-2 pt-2 border-t border-[#F0ECE1]">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="font-bold text-[#1C2E24]">🧠 Spokój umysłu (Głowa)</span>
-                        <span id="mental-label" class="font-bold text-[#3A539B] text-sm">7 / 10</span>
-                    </div>
-                    <input type="range" id="mental-range" min="1" max="10" value="7" 
-                           oninput="updateLabel('mental', this.value)"
-                           class="w-full accent-[#3A539B] cursor-pointer py-1">
-                </div>
-            </section>
-                
-            <!-- Wybór kontekstu / obszaru dnia -->
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
-                <span class="text-xs font-bold text-[#1C2E24] block">Co głównie wypełniało dzisiejszy dzień? (Wybierz kontekst)</span>
-                
-                <div class="flex flex-wrap gap-1.5" id="context-container">
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">💻 Praca / Ekran</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌳 Ruch / Spacer</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">👥 Ludzie / Spotkania</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🧘 Czas dla siebie</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🏠 Dom / Obowiązki</button>
+                    <button id="push-toggle-btn" onclick="togglePushNotifications()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-2.5 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center justify-center space-x-2 shadow-xs">
+                        <span>🔔</span>
+                        <span id="push-toggle-text">Włącz powiadomienia o ciekawostkach SLoW</span>
+                    </button>
                 </div>
             </section>
-
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
-                <span class="text-xs font-bold text-[#1C2E24] block">Jakie odczucie dominuje? (Wybierz tagi)</span>
-                
-                <div class="flex flex-wrap gap-1.5" id="tags-container">
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🔥 Ciepło</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">⚡ Pozytywna energia</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">✨ Lekkość</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌍 Poczucie uziemienia</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🍃 Głęboki relaks</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">💨 Spokojny oddech</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌪️ Stres</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">⚡ Napięcie</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌊 Poddenerwowanie</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">❄️ Chłód</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🎯 Trudności z koncentracją</button>
-                    <button onclick="toggleTag(this)" class="tag-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">☁️ Ciężka głowa</button>
-                </div>
-            </section>
-
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
-                <label class="block text-xs font-bold text-[#1C2E24]">Za co dzisiaj czujesz wdzięczność?</label>
-                <input type="text" id="journal-gratitude" maxlength="120" placeholder="np. za ciepłą herbatę i chwilę ciszy..." 
-                       class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
-            </section>
-
-            <button onclick="saveJournalEntry()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer">
-                Zapisz dzisiejszy wpis w Dzienniku 🌿
-            </button>
 
         </main>
 
+        <!-- Dolna nawigacja PWA -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
             <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
                 <span class="text-[10px] font-medium mt-0.5">Strefa</span>
             </a>
-            <a href="journal.html" class="flex flex-col items-center text-[#3A539B]">
+            <a href="journal.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🧘‍♀️</span>
-                <span class="text-[10px] font-semibold mt-0.5">Dziennik</span>
+                <span class="text-[10px] font-medium mt-0.5">Dziennik</span>
             </a>
             <a href="reservation.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">📅</span>
                 <span class="text-[10px] font-medium mt-0.5">Rezerwacje</span>
             </a>
-            <a href="profile.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="profile.html" class="flex flex-col items-center text-[#D35400]">
                 <span class="text-lg">⚙️</span>
-                <span class="text-[10px] font-medium mt-0.5">Profil</span>
+                <span class="text-[10px] font-bold mt-0.5">Profil</span>
             </a>
         </nav>
 
@@ -167,237 +187,142 @@
             window.location.href = 'login.html';
         }
 
-        let selectedTags = [];
-        let selectedContext = '';
-        let moodChartInstance = null;
-        let globalHistoryData = [];
-
-        function updateLabel(type, val) {
-            document.getElementById(`${type}-label`).innerText = `${val} / 10`;
-        }
-
-        function selectContext(btn) {
-            document.querySelectorAll('.context-btn').forEach(b => {
-                b.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
-                b.classList.add('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
-            });
-            btn.classList.add('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
-            btn.classList.remove('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
-            selectedContext = btn.innerText;
-        }
-
-        function toggleTag(btn) {
-            const tagText = btn.innerText;
-            if (btn.classList.contains('bg-[#1C2833]')) {
-                btn.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
-                btn.classList.add('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
-                selectedTags = selectedTags.filter(t => t !== tagText);
-            } else {
-                btn.classList.add('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
-                btn.classList.remove('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
-                selectedTags.push(tagText);
+        async function loadProfileView() {
+            const userName = localStorage.getItem('slow_user_name') || 'Klient';
+            const userEmail = localStorage.getItem('slow_user_email') || 'biuro@slowfoundation.com';
+            
+            let userPhone = localStorage.getItem('slow_user_phone');
+            if (!userPhone) {
+                userPhone = '+48 661 796 866';
+                localStorage.setItem('slow_user_phone', userPhone);
             }
-        }
 
-        async function loadUserStats() {
-            const userEmail = localStorage.getItem('slow_user_email');
-            if (!userEmail) return;
+            document.getElementById('profile-name-display').innerText = userName;
+            document.getElementById('profile-email-display').innerText = userEmail;
+            document.getElementById('edit-name').value = userName;
+            document.getElementById('edit-phone').value = userPhone;
+            document.getElementById('profile-initial').innerText = userName.charAt(0).toUpperCase();
+
+            await checkPushSubscriptionState();
 
             try {
-                const response = await fetch(`${API_BASE}/api/journal/stats?email=${encodeURIComponent(userEmail)}`);
-                const data = await response.json();
+                const res = await fetch(`${API_BASE}/api/journal/stats?email=${encodeURIComponent(userEmail)}`);
+                const data = await res.json();
 
                 if (data.hasData) {
-                    document.getElementById('avg-mood-display').innerText = `${data.averageMood} / 10`;
-                    document.getElementById('feedback-desc').innerText = `${data.trendMessage} (Wpisów w bazie: ${data.totalEntries})`;
-
-                    if (data.history && data.history.length > 0) {
-                        globalHistoryData = data.history;
-                        renderChart(globalHistoryData, 'all');
-                    }
-
-                    if (data.insights && data.insights.length > 0) {
-                        const insightsSection = document.getElementById('insights-section');
-                        const insightsContent = document.getElementById('insights-content');
-                        
-                        insightsContent.innerHTML = data.insights.map(text => `
-                            <div class="bg-[#FAF8F5] border border-[#E2DCD0] p-3 rounded-xl">
-                                <p>${text}</p>
-                            </div>
-                        `).join('');
-                        
-                        insightsSection.classList.remove('hidden');
-                    }
+                    document.getElementById('profile-avg-mood').innerText = `${data.averageMood} / 10`;
+                    document.getElementById('profile-total-entries').innerText = data.totalEntries;
+                    document.getElementById('profile-journal-trend').innerText = data.trendMessage;
                 } else {
-                    document.getElementById('avg-mood-display').innerText = "Brak danych";
-                    document.getElementById('feedback-desc').innerText = data.message;
+                    document.getElementById('profile-avg-mood').innerText = "- / 10";
+                    document.getElementById('profile-total-entries').innerText = "0";
+                    document.getElementById('profile-journal-trend').innerText = "Rozpocznij codzienne wpisy w Dzienniku, aby zobaczyć swoje statystyki.";
                 }
             } catch (err) {
-                console.error('Błąd ładowania statystyk:', err);
-                document.getElementById('feedback-desc').innerText = "Nie udało się pobrać statystyk z bazy.";
+                console.error('Błąd pobierania statystyk profilu:', err);
             }
         }
 
-        function filterChart(type) {
-            document.querySelectorAll('.chart-filter-btn').forEach(b => {
-                b.classList.remove('bg-[#2E4053]', 'text-[#FAF8F5]');
-                b.classList.add('bg-[#121821]', 'text-[#A5B3C2]');
-            });
-            const activeBtn = document.getElementById(`filter-${type}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-[#121821]', 'text-[#A5B3C2]');
-                activeBtn.classList.add('bg-[#2E4053]', 'text-[#FAF8F5]');
-            }
-            if (globalHistoryData.length > 0) {
-                renderChart(globalHistoryData, type);
-            }
-        }
+        function saveProfileChanges() {
+            const newName = document.getElementById('edit-name').value.trim();
+            const newPhone = document.getElementById('edit-phone').value.trim();
 
-        function renderChart(historyData, filter = 'all') {
-            const ctx = document.getElementById('moodChart').getContext('2d');
-            const labels = historyData.map(item => item.date);
-            
-            const physicalData = historyData.map(item => item.physical !== undefined ? item.physical : item.mood);
-            const mentalData = historyData.map(item => item.mental !== undefined ? item.mental : item.mood);
-            const waveData = physicalData.map((p, idx) => Number(((p + mentalData[idx]) / 2).toFixed(1)));
-
-            const datasets = [];
-
-            if (filter === 'all' || filter === 'wave') {
-                datasets.push({
-                    label: 'Średnia Ogólna',
-                    data: waveData,
-                    borderColor: 'rgba(229, 152, 102, 0.4)',
-                    backgroundColor: 'rgba(229, 152, 102, 0.15)',
-                    borderWidth: 1.5,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 0,
-                    order: 3
-                });
-            }
-
-            if (filter === 'all' || filter === 'body') {
-                datasets.push({
-                    label: 'Ciało',
-                    data: physicalData,
-                    borderColor: '#E59866',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: false,
-                    pointBackgroundColor: '#E59866',
-                    pointRadius: 4,
-                    order: 1
-                });
-            }
-
-            if (filter === 'all' || filter === 'mind') {
-                datasets.push({
-                    label: 'Umysł',
-                    data: mentalData,
-                    borderColor: '#A9CCE3',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: false,
-                    pointBackgroundColor: '#3A539B',
-                    pointRadius: 4,
-                    order: 2
-                });
-            }
-
-            if (moodChartInstance) moodChartInstance.destroy();
-
-            moodChartInstance = new Chart(ctx, {
-                type: 'line',
-                data: { labels: labels, datasets: datasets },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: false },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    let label = context.dataset.label || '';
-                                    if (label) label += ': ';
-                                    if (context.parsed.y !== null) label += context.parsed.y + ' / 10';
-                                    return label;
-                                }
-                            }
-                        }
-                    },
-                    scales: {
-                        y: {
-                            min: 1, max: 10,
-                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-                            ticks: { color: '#A5B3C2', font: { size: 10 } }
-                        },
-                        x: {
-                            grid: { display: false },
-                            ticks: { color: '#A5B3C2', font: { size: 9 }, maxTicksLimit: 5 }
-                        }
-                    }
-                }
-            });
-        }
-
-        // Automatyczne ustalanie pory dnia na podstawie aktualnej godziny
-        function getTimeOfDay() {
-            const hour = new Date().getHours();
-            if (hour >= 5 && hour < 12) return '🌅 Poranek';
-            if (hour >= 12 && hour < 18) return '☀️ Popołudnie';
-            return '🌙 Wieczór';
-        }
-
-        async function saveJournalEntry() {
-            const userEmail = localStorage.getItem('slow_user_email');
-            if (!userEmail) {
-                alert('Musisz być zalogowany.');
+            if (!newName) {
+                alert('Imię nie może być puste.');
                 return;
             }
 
-            const physical = document.getElementById('physical-range').value;
-            const mental = document.getElementById('mental-range').value;
-            const mood = Math.round((parseInt(physical) + parseInt(mental)) / 2);
-            const effect = selectedTags.join(', ');
-            const gratitude = document.getElementById('journal-gratitude').value.trim();
-            const context = selectedContext;
-            const timeOfDay = getTimeOfDay();
+            localStorage.setItem('slow_user_name', newName);
+            localStorage.setItem('slow_user_phone', newPhone);
+            
+            document.getElementById('profile-name-display').innerText = newName;
+            document.getElementById('profile-initial').innerText = newName.charAt(0).toUpperCase();
 
+            alert('Zmiany zostały zapisane pomyślnie! 🌿');
+        }
+
+        async function checkPushSubscriptionState() {
+            if (!('serviceWorker' in navigator)) return;
             try {
-                const response = await fetch(`${API_BASE}/api/journal`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        email: userEmail, 
-                        mood, 
-                        physical, 
-                        mental, 
-                        effect, 
-                        gratitude, 
-                        context, 
-                        timeOfDay,
-                        reflection: '' 
-                    })
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                    alert('Twój wpis został zapisany w Dzienniku SLoW 🌿');
-                    // Zostajemy na stronie i odświeżamy statystyki oraz wykres, aby zobaczyć wyniki!
-                    loadUserStats();
+                const registration = await navigator.serviceWorker.ready;
+                const subscription = await registration.pushManager.getSubscription();
+                
+                const btn = document.getElementById('push-toggle-btn');
+                const btnText = document.getElementById('push-toggle-text');
+                
+                if (subscription) {
+                    btnText.innerText = "Wyłącz powiadomienia o ciekawostkach";
+                    btn.classList.remove('bg-[#E59866]', 'hover:bg-[#DC7633]');
+                    btn.classList.add('bg-[#7F8C8D]', 'hover:bg-[#707B7C]');
                 } else {
-                    alert('Błąd: ' + result.error);
+                    btnText.innerText = "Włącz powiadomienia o ciekawostkach SLoW";
+                    btn.classList.remove('bg-[#7F8C8D]', 'hover:bg-[#707B7C]');
+                    btn.classList.add('bg-[#E59866]', 'hover:bg-[#DC7633]');
                 }
             } catch (err) {
-                console.error('Błąd sieci:', err);
-                alert('Nie udało się połączyć z serwerem.');
+                console.error('Błąd sprawdzania stanu push:', err);
             }
         }
 
-        loadUserStats();
+        async function togglePushNotifications() {
+            if (!('serviceWorker' in navigator)) {
+                alert('Twoja przeglądarka nie obsługuje powiadomień.');
+                return;
+            }
+
+            try {
+                const registration = await navigator.serviceWorker.register('sw.js');
+                const existingSub = await registration.pushManager.getSubscription();
+
+                if (existingSub) {
+                    await existingSub.unsubscribe();
+                    alert('Powiadomienia zostały wyłączone.');
+                    await checkPushSubscriptionState();
+                } else {
+                    const permission = await Notification.requestPermission();
+                    if (permission !== 'granted') {
+                        alert('Brak zgody na otrzymywanie powiadomień.');
+                        return;
+                    }
+
+                    const publicVapidKey = 'BKISh9djnpty_DFXT1wC5ZRj-t4BUEi1KpcE4DcXkFl8zcVA0NWqn5yU6e3ereN6wPq2dF_HSjVe1vw79OklO64';
+                    const newSub = await registration.pushManager.subscribe({
+                        userVisibleOnly: true,
+                        applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+                    });
+
+                    await fetch(`${API_BASE}/api/push/subscribe`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(newSub)
+                    });
+
+                    alert('Powiadomienia SLoW zostały włączone pomyślnie! 🌿');
+                    await checkPushSubscriptionState();
+                }
+            } catch (err) {
+                console.error('Błąd przełączania subskrypcji push:', err);
+                alert('Wystąpił błąd podczas zmiany ustawień powiadomień.');
+            }
+        }
+
+        function urlBase64ToUint8Array(base64String) {
+            const padding = '='.repeat((4 - base64String.length % 4) % 4);
+            const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+            const rawData = window.atob(base64);
+            const outputArray = new Uint8Array(rawData.length);
+            for (let i = 0; i < rawData.length; ++i) {
+                outputArray[i] = rawData.charCodeAt(i);
+            }
+            return outputArray;
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = 'login.html';
+        }
+
+        loadProfileView();
     </script>
 </body>
 </html>

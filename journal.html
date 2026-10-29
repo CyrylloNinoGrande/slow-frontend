@@ -33,7 +33,7 @@
 
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
-            <!-- Wykres z filtrami i falą w tle -->
+            <!-- Wykres z filtrami i średnią ogólną -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden space-y-3">
                 <div class="flex justify-between items-center">
                     <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Analiza Trendów</span>
@@ -45,7 +45,7 @@
                     <button onclick="filterChart('all')" id="filter-all" class="chart-filter-btn text-[10px] bg-[#2E4053] text-[#FAF8F5] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">Wszystko</button>
                     <button onclick="filterChart('body')" id="filter-body" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">💪 Ciało</button>
                     <button onclick="filterChart('mind')" id="filter-mind" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🧠 Umysł</button>
-                    <button onclick="filterChart('wave')" id="filter-wave" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🌊 Fala Tła</button>
+                    <button onclick="filterChart('wave')" id="filter-wave" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🌊 Średnia Ogólna</button>
                 </div>
 
                 <div class="flex items-baseline space-x-2 pt-1">
@@ -265,7 +265,7 @@
 
             if (filter === 'all' || filter === 'wave') {
                 datasets.push({
-                    label: 'Fala Wypadkowa',
+                    label: 'Średnia Ogólna',
                     data: waveData,
                     borderColor: 'rgba(229, 152, 102, 0.4)',
                     backgroundColor: 'rgba(229, 152, 102, 0.15)',
@@ -364,7 +364,7 @@
             const effect = selectedTags.join(', ');
             const gratitude = document.getElementById('journal-gratitude').value.trim();
             const context = selectedContext;
-            const timeOfDay = getTimeOfDay(); // automatycznie pobierana pora dnia
+            const timeOfDay = getTimeOfDay();
 
             try {
                 const response = await fetch(`${API_BASE}/api/journal`, {
@@ -386,7 +386,8 @@
                 const result = await response.json();
                 if (result.success) {
                     alert('Twój wpis został zapisany w Dzienniku SLoW 🌿');
-                    window.location.href = 'index.html';
+                    // Zostajemy na stronie i odświeżamy statystyki oraz wykres, aby zobaczyć wyniki!
+                    loadUserStats();
                 } else {
                     alert('Błąd: ' + result.error);
                 }
