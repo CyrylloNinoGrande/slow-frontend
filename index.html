@@ -11,6 +11,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .mandala-layer {
+            transition: opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
+            mix-blend-mode: multiply; 
+        }
     </style>
 </head>
 <body class="bg-[#121212] text-[#2C3531] flex justify-center items-center min-h-screen m-0">
@@ -40,7 +44,51 @@
         <!-- Treść przewijalna -->
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
-            <!-- Program Poleceń -->
+            <!-- Karta Lojalnościowa: Kompaktowa, żywa i ciepła Mandala SLoW -->
+            <section class="bg-gradient-to-br from-[#FFFDF9] via-[#FAF4E6] to-[#F3E7D3] border border-[#E3D5BE] rounded-2xl p-3.5 shadow-xs relative overflow-hidden">
+                
+                <!-- Miękka, ciepła, słoneczna poświata w tle -->
+                <div class="absolute -top-10 -right-10 w-32 h-32 bg-[#F9E79F]/30 rounded-full blur-2xl pointer-events-none"></div>
+
+                <div class="flex justify-between items-start mb-1.5 relative z-10">
+                    <div>
+                        <span class="text-[9px] font-bold uppercase tracking-wider text-[#935116] bg-[#FDEBD0] px-2 py-0.5 rounded-md">Program Lojalnościowy</span>
+                        <h3 class="text-xs font-bold text-[#1C2E24] mt-1">Mandala Równowagi SLoW</h3>
+                    </div>
+                    <span class="text-base">🪷</span>
+                </div>
+                <p class="text-[11px] text-[#7C8780] mb-2 relative z-10">
+                    Zbierz 3 wizyty, aby mandala rozkwitła ciepłem i zyskaj <span class="font-semibold text-[#1C2E24]">30 min w kapsule</span> gratis!
+                </p>
+
+                <!-- Kontener mandali z żywym, maślano-beżowym tłem (#FDF6E2) dodającym energii -->
+                <div class="flex flex-col items-center justify-center my-2 bg-[#FDF6E2] border border-[#EADCA8] rounded-xl py-2 px-3 relative shadow-inner">
+                    <div class="relative w-36 h-36 flex items-center justify-center">
+                        
+                        <!-- 1. Baza (szkielet / kontur) -->
+                        <img src="mandala-base.png" alt="Mandala Base" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-85">
+
+                        <!-- 2. Faza 1: Kolorowy środek (po 1. wizycie) -->
+                        <img id="mandala-layer-1" src="layer-1.png" alt="Faza 1" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-0 scale-90">
+
+                        <!-- 3. Faza 2: Środkowy pierścień (po 2. wizycie) -->
+                        <img id="mandala-layer-2" src="layer-2.png" alt="Faza 2" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-0 scale-95">
+
+                        <!-- 4. Faza 3: Pełny rozkwit zewnętrzny (po 3. wizycie - nagroda) -->
+                        <img id="mandala-layer-3" src="layer-3.png" alt="Faza 3" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-0 scale-95">
+                    </div>
+                </div>
+
+                <!-- Status i Akcja -->
+                <div id="loyalty-action-container" class="relative z-10">
+                    <div class="flex justify-between items-center text-[11px] text-[#7C8780] pt-0.5">
+                        <span>Postęp: <strong id="loyalty-count" class="text-[#1C2E24]">0</strong>/3 wizyty</span>
+                        <span id="loyalty-status-text" class="font-medium text-[#935116]">Rozpocznij zbieranie</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Program Poleceń (DRUGIE MIEJSCE) -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
                 <div class="flex justify-between items-start mb-2">
                     <div>
@@ -95,7 +143,7 @@
                 <span id="next-visit-badge" class="text-xs font-medium text-[#7C8780] bg-[#EFECE6] px-2.5 py-1 rounded-lg">Sprawdzam</span>
             </section>
 
-            <!-- Mądrość i Ciekawostka SLoW (Przeniesiona z dziennika) -->
+            <!-- Mądrość i Ciekawostka SLoW -->
             <section class="bg-gradient-to-br from-[#FAF8F5] to-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
                 <div class="flex items-center space-x-2 mb-1.5">
                     <span class="text-sm">💡</span>
@@ -229,6 +277,59 @@
                     if (count >= 6) statusText.innerText = "🎉 Osiągnięto 20% zniżki!";
                     else if (count >= 3) statusText.innerText = "🔥 Osiągnięto 10% zniżki!";
                     else statusText.innerText = `Brakuje ${3 - count} do 10% zniżki`;
+                }
+
+                // === LOGIKA ROZKWITANIA WARSTWOWEJ MANDALI (3 FAZY) ===
+                const loyaltyCount = data.loyaltyCount || 0; // 0 do 3
+                const rewardAvailable = data.loyaltyRewardAvailable || false;
+
+                document.getElementById('loyalty-count').innerText = loyaltyCount;
+
+                // Pobieramy warstwy graficzne
+                const l1 = document.getElementById('mandala-layer-1');
+                const l2 = document.getElementById('mandala-layer-2');
+                const l3 = document.getElementById('mandala-layer-3');
+
+                // Faza 1 (Środek - po 1. wizycie)
+                if (loyaltyCount >= 1 || loyaltyCount >= 3) {
+                    l1.classList.remove('opacity-0', 'scale-90');
+                    l1.classList.add('opacity-100', 'scale-100');
+                } else {
+                    l1.classList.add('opacity-0', 'scale-90');
+                    l1.classList.remove('opacity-100', 'scale-100');
+                }
+
+                // Faza 2 (Środkowy pierścień - po 2. wizycie)
+                if (loyaltyCount >= 2 || loyaltyCount >= 3) {
+                    l2.classList.remove('opacity-0', 'scale-95');
+                    l2.classList.add('opacity-100', 'scale-100');
+                } else {
+                    l2.classList.add('opacity-0', 'scale-95');
+                    l2.classList.remove('opacity-100', 'scale-100');
+                }
+
+                // Faza 3 (Pełny rozkwit zewnętrzny - po 3. wizycie)
+                if (loyaltyCount >= 3 || rewardAvailable) {
+                    l3.classList.remove('opacity-0', 'scale-95');
+                    l3.classList.add('opacity-100', 'scale-100');
+                } else {
+                    l3.classList.add('opacity-0', 'scale-95');
+                    l3.classList.remove('opacity-100', 'scale-100');
+                }
+
+                const loyaltyActionContainer = document.getElementById('loyalty-action-container');
+                if (rewardAvailable || loyaltyCount >= 3) {
+                    loyaltyActionContainer.innerHTML = `
+                        <div class="bg-[#FDEBD0] border border-[#F5CBA7] rounded-xl p-3 text-center space-y-2 mt-2">
+                            <p class="text-xs font-bold text-[#935116]">🪷 Mandala w pełni rozkwitła! Zyskujesz 30 min w kapsule.</p>
+                            <a href="reservation.html?reward=capsule_30" class="block w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-2 rounded-lg text-xs font-semibold transition text-center shadow-xs">
+                                Umów 30 min w Kapsule gratis →
+                            </a>
+                        </div>
+                    `;
+                } else {
+                    const missing = 3 - loyaltyCount;
+                    document.getElementById('loyalty-status-text').innerText = `Brakuje ${missing} wizyt do pełnego rozkwitu`;
                 }
 
                 const visitText = document.getElementById('next-visit-text');

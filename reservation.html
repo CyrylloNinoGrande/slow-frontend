@@ -165,13 +165,13 @@
                 </div>
             </section>
 
-            <!-- Zgody formalne (Wymóg PayU / RODO) -->
+            <!-- Zgody formalne -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-3.5 shadow-xs space-y-2.5">
                 <label class="flex items-start space-x-2.5 cursor-pointer">
                     <input type="checkbox" id="terms-checkbox" class="mt-0.5 accent-[#1C2833] w-4 h-4 cursor-pointer">
                     <span class="text-[11px] text-[#55605B] leading-relaxed">
                         Akceptuję postanowienia <a href="regulamin.html" target="_blank" class="text-[#3A539B] underline font-bold">Regulaminu Serwisu i Polityki Prywatności (RODO)</a> oraz wyrażam zgodę na przetwarzanie danych.
-    </span>
+                    </span>
                 </label>
             </section>
 
@@ -264,6 +264,31 @@
             updatePriceDisplay();
 
             document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
+
+            // Obsługa nagrody z Mandali Lojalnościowej
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('reward') === 'capsule_30') {
+                const serviceCards = document.querySelectorAll('.service-card');
+                serviceCards.forEach(card => {
+                    if (card.innerText.includes('Kapsuła balansująca')) {
+                        card.click();
+                    }
+                });
+                
+                selectedServiceName = 'Kapsuła balansująca (Nagroda z Mandali)';
+                selectedBasePrice = 0;
+                document.getElementById('selected-service-name').innerText = selectedServiceName;
+                document.getElementById('base-price-display').innerText = '0 zł (Nagroda)';
+                document.getElementById('final-price-display').innerText = '0 zł';
+
+                if (userEmail) {
+                    fetch(`${API_BASE}/api/loyalty/claim-reward`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: userEmail })
+                    }).catch(err => console.error('Błąd resetu nagrody lojalnościowej:', err));
+                }
+            }
         }
 
         function switchTab(tab) {
@@ -298,8 +323,10 @@
                 }
             });
 
-            element.classList.remove('bg-[#F0ECE1]', 'bg-[#FFF3E0]');
-            element.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
+            if (element) {
+                element.classList.remove('bg-[#F0ECE1]', 'bg-[#FFF3E0]');
+                element.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
+            }
 
             document.getElementById('selected-service-name').innerText = name;
             updatePriceDisplay();
@@ -354,7 +381,6 @@
         }
 
         async function startPayUPayment() {
-            // Weryfikacja zgody RODO / Regulaminu (Wymóg audytu PayU)
             const termsChecked = document.getElementById('terms-checkbox').checked;
             if (!termsChecked) {
                 alert('Musisz zaakceptować Regulamin Serwisu oraz Politykę Prywatności, aby przejść do płatności.');
