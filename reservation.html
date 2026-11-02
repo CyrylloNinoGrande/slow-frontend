@@ -160,7 +160,7 @@
                     <span id="discount-display" class="font-bold text-[#F5CBA7]">0%</span>
                 </div>
                 <div class="border-t border-[#2E4053] pt-2 flex justify-between items-center text-sm font-bold">
-                    <span>Do zapłaty (PayU):</span>
+                    <span>Do zapłaty:</span>
                     <span id="final-price-display" class="text-base text-[#E59866]">1 zł</span>
                 </div>
             </section>
@@ -175,10 +175,10 @@
                 </label>
             </section>
 
-            <!-- Przycisk płatności -->
+            <!-- Przycisk płatności / rezerwacji -->
             <button onclick="startPayUPayment()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center space-x-2">
                 <span>💳</span>
-                <span>Przejdź do bezpiecznej płatności PayU</span>
+                <span>Zatwierdź i przejdź dalej</span>
             </button>
 
         </main>
@@ -265,7 +265,7 @@
 
             document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
 
-            // Obsługa nagrody z Mandali Lojalnościowej
+            // Obsługa nagrody z Mandali Lojalnościowej (darmowe 30 min w kapsule)
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('reward') === 'capsule_30') {
                 const serviceCards = document.querySelectorAll('.service-card');
@@ -275,19 +275,11 @@
                     }
                 });
                 
-                selectedServiceName = 'Kapsuła balansująca (Nagroda z Mandali)';
+                selectedServiceName = 'Kapsuła balansująca (Nagroda z Mandali - 30 min)';
                 selectedBasePrice = 0;
                 document.getElementById('selected-service-name').innerText = selectedServiceName;
                 document.getElementById('base-price-display').innerText = '0 zł (Nagroda)';
                 document.getElementById('final-price-display').innerText = '0 zł';
-
-                if (userEmail) {
-                    fetch(`${API_BASE}/api/loyalty/claim-reward`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: userEmail })
-                    }).catch(err => console.error('Błąd resetu nagrody lojalnościowej:', err));
-                }
             }
         }
 
@@ -383,7 +375,7 @@
         async function startPayUPayment() {
             const termsChecked = document.getElementById('terms-checkbox').checked;
             if (!termsChecked) {
-                alert('Musisz zaakceptować Regulamin Serwisu oraz Politykę Prywatności, aby przejść do płatności.');
+                alert('Musisz zaakceptować Regulamin Serwisu oraz Politykę Prywatności, aby przejść dalej.');
                 return;
             }
 
@@ -405,6 +397,32 @@
             localStorage.setItem('slow_last_service', selectedServiceName);
             localStorage.setItem('slow_last_datetime', dateTime);
 
+            // Jeśli kwota wynosi 0 zł (Nagroda z Mandali), omijamy PayU i rezerwujemy bezpośrednio
+            if (finalPrice === 0) {
+                try {
+                    const response = await fetch(`${API_BASE}/api/loyalty/book-reward`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: userEmail,
+                            serviceName: selectedServiceName,
+                            dateTime: dateTime
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        window.location.href = 'success.html';
+                    } else {
+                        alert('Błąd rezerwacji nagrody: ' + (result.error || 'Nieznany błąd'));
+                    }
+                } catch (err) {
+                    console.error('Błąd sieci:', err);
+                    alert('Nie udało się połączyć z serwerem.');
+                }
+                return;
+            }
+
+            // Standardowa płatność PayU dla kwot > 0 zł
             try {
                 const response = await fetch(`${API_BASE}/api/payment/create`, {
                     method: 'POST',

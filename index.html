@@ -58,7 +58,7 @@
                     <span class="text-base">🪷</span>
                 </div>
                 <p class="text-[11px] text-[#7C8780] mb-2 relative z-10">
-                    Zbierz 3 wizyty, aby mandala rozkwitła ciepłem i zyskaj <span class="font-semibold text-[#1C2E24]">30 min w kapsule</span> gratis!
+                    Zbierz 3 wizyty, aby mandala rozkwitła ciepłem i zyskaj <span class="font-semibold text-[#1C2E24]">30 min w kapsule</span> gratis! <span class="block text-[10px] text-[#935116] mt-0.5 font-medium">⏳ Kupon ważny przez 30 dni od zdobycia.</span>
                 </p>
 
                 <!-- Kontener mandali z żywym, maślano-beżowym tłem (#FDF6E2) dodającym energii -->
@@ -282,6 +282,7 @@
                 // === LOGIKA ROZKWITANIA WARSTWOWEJ MANDALI (3 FAZY) ===
                 const loyaltyCount = data.loyaltyCount || 0; // 0 do 3
                 const rewardAvailable = data.loyaltyRewardAvailable || false;
+                const rewardExpiresAt = data.loyaltyRewardExpiresAt;
 
                 document.getElementById('loyalty-count').innerText = loyaltyCount;
 
@@ -319,9 +320,11 @@
 
                 const loyaltyActionContainer = document.getElementById('loyalty-action-container');
                 if (rewardAvailable || loyaltyCount >= 3) {
+                    const expiryInfo = rewardExpiresAt ? `<span class="block text-[10px] text-[#C0392B] font-semibold mt-0.5">⏰ Ważny do: ${rewardExpiresAt}</span>` : '';
                     loyaltyActionContainer.innerHTML = `
                         <div class="bg-[#FDEBD0] border border-[#F5CBA7] rounded-xl p-3 text-center space-y-2 mt-2">
                             <p class="text-xs font-bold text-[#935116]">🪷 Mandala w pełni rozkwitła! Zyskujesz 30 min w kapsule.</p>
+                            ${expiryInfo}
                             <a href="reservation.html?reward=capsule_30" class="block w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-2 rounded-lg text-xs font-semibold transition text-center shadow-xs">
                                 Umów 30 min w Kapsule gratis →
                             </a>
