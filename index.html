@@ -58,23 +58,15 @@
                     <span class="text-base">🪷</span>
                 </div>
                 <p class="text-[11px] text-[#7C8780] mb-2 relative z-10">
-                    Zbierz 3 wizyty, aby mandala rozkwitła ciepłem i zyskaj <span class="font-semibold text-[#1C2E24]">30 min w kapsule</span> gratis! <span class="block text-[10px] text-[#935116] mt-0.5 font-medium">⏳ Kupon ważny przez 30 dni od zdobycia.</span>
+                    Zbierz 3 wizyty, aby mandala rozkwitła ciepłem i zyskaj <span class="font-semibold text-[#1C2E24]">30 min w kapsule</span> gratis! <span class="block text-[10px] text-[#935116] mt-0.5 font-medium">⏳ Kupon jest ważny przez 30 dni od momentu zdobycia.</span>
                 </p>
 
-                <!-- Kontener mandali z żywym, maślano-beżowym tłem (#FDF6E2) dodającym energii -->
+                <!-- Kontener mandali -->
                 <div class="flex flex-col items-center justify-center my-2 bg-[#FDF6E2] border border-[#EADCA8] rounded-xl py-2 px-3 relative shadow-inner">
                     <div class="relative w-36 h-36 flex items-center justify-center">
-                        
-                        <!-- 1. Baza (szkielet / kontur) -->
                         <img src="mandala-base.png" alt="Mandala Base" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-85">
-
-                        <!-- 2. Faza 1: Kolorowy środek (po 1. wizycie) -->
                         <img id="mandala-layer-1" src="layer-1.png" alt="Faza 1" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-0 scale-90">
-
-                        <!-- 3. Faza 2: Środkowy pierścień (po 2. wizycie) -->
                         <img id="mandala-layer-2" src="layer-2.png" alt="Faza 2" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-0 scale-95">
-
-                        <!-- 4. Faza 3: Pełny rozkwit zewnętrzny (po 3. wizycie - nagroda) -->
                         <img id="mandala-layer-3" src="layer-3.png" alt="Faza 3" class="absolute inset-0 w-full h-full object-contain mandala-layer opacity-0 scale-95">
                     </div>
                 </div>
@@ -88,7 +80,7 @@
                 </div>
             </section>
 
-            <!-- Program Poleceń (DRUGIE MIEJSCE) -->
+            <!-- Program Poleceń -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
                 <div class="flex justify-between items-start mb-2">
                     <div>
@@ -121,7 +113,7 @@
                 </div>
             </section>
 
-            <!-- Rezerwacja -->
+            <!-- Rezerwacja standardowa -->
             <section>
                 <a href="reservation.html" class="block bg-[#E59866] hover:bg-[#DC7633] text-white p-4 rounded-2xl shadow-md transition text-center group">
                     <div class="font-bold text-sm mb-0.5">Zarezerwuj Legalny Wypoczynek</div>
@@ -168,6 +160,33 @@
 
         </main>
 
+        <!-- MODAL DO BEZPOŚREDNIEGO ODBIORU NAGRODY (KAPSUŁA 30 MIN) -->
+        <div id="reward-modal" class="fixed inset-0 bg-black/60 backdrop-blur-xs z-50 hidden flex items-center justify-center p-4">
+            <div class="bg-[#FAF8F5] border border-[#E2DCD0] rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4">
+                <div class="flex justify-between items-center border-b border-[#E2DCD0] pb-2">
+                    <h3 class="text-sm font-bold text-[#1C2E24]">🪷 Odbierz darmową sesję w Kapsule</h3>
+                    <button onclick="closeRewardModal()" class="text-xs text-[#7C8780] hover:text-black">✕ Zamknij</button>
+                </div>
+                <p class="text-xs text-[#55605B] leading-relaxed">
+                    Wybierz termin swojej darmowej 30-minutowej sesji w kapsule balansującej. Rezerwacja nastąpi natychmiastowo bez opłat.
+                </p>
+                
+                <div class="space-y-2">
+                    <label class="block text-xs font-bold text-[#1C2E24]">Wybierz datę:</label>
+                    <input type="date" id="reward-date" class="w-full px-3 py-2 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
+                    
+                    <label class="block text-xs font-bold text-[#1C2E24] pt-1">Dostępne godziny:</label>
+                    <div id="reward-slots-container" class="grid grid-cols-3 gap-2 max-h-36 overflow-y-auto">
+                        <span class="text-[11px] text-[#7C8780] col-span-3">Wybierz datę...</span>
+                    </div>
+                </div>
+
+                <button onclick="confirmRewardBooking()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3 rounded-xl font-bold text-xs shadow-md transition cursor-pointer">
+                    Potwierdź darmową rezerwację 🌿
+                </button>
+            </div>
+        </div>
+
         <!-- Dolna nawigacja -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
             <a href="index.html" class="flex flex-col items-center text-[#3A539B]">
@@ -199,6 +218,8 @@
             window.location.href = 'login.html';
         }
 
+        let selectedRewardSlot = null;
+
         function logout() {
             localStorage.clear();
             window.location.href = 'login.html';
@@ -218,19 +239,9 @@
                 alert('Kod polecenia nie został jeszcze załadowany.');
                 return;
             }
-
             const referralLink = `${window.location.origin}/login.html?ref=${code}`;
-
-            if (navigator.share) {
-                navigator.share({
-                    title: 'Strefa SLoW - Legalny Wypoczynek',
-                    text: 'Skorzystaj ze Strefy SLoW i zadbaj o chwilę wytchnienia. Zarejestruj się z mojego polecenia!',
-                    url: referralLink,
-                }).catch((err) => console.log('Udostępnianie anulowane', err));
-            } else {
-                navigator.clipboard.writeText(referralLink);
-                alert(`Skopiowano link polecenia do schowka:\n${referralLink}`);
-            }
+            navigator.clipboard.writeText(referralLink);
+            alert(`Skopiowano link polecenia do schowka:\n${referralLink}`);
         }
 
         async function loadSlowTrivia() {
@@ -241,12 +252,91 @@
                     document.getElementById('trivia-text').innerText = data.trivia.text;
                 }
             } catch (err) {
-                console.error('Błąd pobierania ciekawostki:', err);
                 document.getElementById('trivia-text').innerText = "Moksoterapia i homeopatia pomagają przywrócić naturalną równowagę organizmu.";
             }
         }
-
         loadSlowTrivia();
+
+        function openRewardModal() {
+            document.getElementById('reward-modal').classList.remove('hidden');
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('reward-date').valueAsDate = tomorrow;
+            loadRewardSlots();
+            document.getElementById('reward-date').addEventListener('change', loadRewardSlots);
+        }
+
+        function closeRewardModal() {
+            document.getElementById('reward-modal').classList.add('hidden');
+        }
+
+        async function loadRewardSlots() {
+            const date = document.getElementById('reward-date').value;
+            const container = document.getElementById('reward-slots-container');
+            container.innerHTML = '<span class="text-[11px] text-[#7C8780] col-span-3">Ładowanie terminów...</span>';
+
+            try {
+                const res = await fetch(`${API_BASE}/api/available-slots?date=${date}`);
+                const data = await res.json();
+                container.innerHTML = '';
+                if (data.availableSlots && data.availableSlots.length > 0) {
+                    data.availableSlots.forEach(slot => {
+                        const btn = document.createElement('button');
+                        btn.type = 'button';
+                        btn.innerText = slot;
+                        btn.className = "py-2 bg-white border border-[#E2DCD0] rounded-xl text-xs font-semibold hover:border-[#E59866] transition cursor-pointer";
+                        btn.onclick = () => selectRewardSlot(slot, btn);
+                        container.appendChild(btn);
+                    });
+                } else {
+                    container.innerHTML = '<span class="text-[11px] text-[#C0392B] col-span-3">Brak wolnych terminów.</span>';
+                }
+            } catch (err) {
+                container.innerHTML = '<span class="text-[11px] text-[#C0392B] col-span-3">Błąd ładowania terminów.</span>';
+            }
+        }
+
+        function selectRewardSlot(slot, btn) {
+            document.querySelectorAll('#reward-slots-container button').forEach(b => {
+                b.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
+                b.classList.add('bg-white', 'text-[#2C3531]');
+            });
+            btn.classList.remove('bg-white', 'text-[#2C3531]');
+            btn.classList.add('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
+            selectedRewardSlot = slot;
+        }
+
+        async function confirmRewardBooking() {
+            const userEmail = localStorage.getItem('slow_user_email');
+            const date = document.getElementById('reward-date').value;
+
+            if (!selectedRewardSlot) {
+                alert('Wybierz godzinę wizyty.');
+                return;
+            }
+
+            const dateTime = `${date}T${selectedRewardSlot}:00`;
+
+            try {
+                const response = await fetch(`${API_BASE}/api/loyalty/book-reward`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: userEmail,
+                        serviceName: 'Kapsuła balansująca (Nagroda - 30 min)',
+                        dateTime: dateTime
+                    })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = 'success.html';
+                } else {
+                    alert('Błąd rezerwacji: ' + (result.error || 'Nieznany błąd'));
+                }
+            } catch (err) {
+                alert('Nie udało się połączyć z serwerem.');
+            }
+        }
 
         async function loadUserProfile() {
             const userName = localStorage.getItem('slow_user_name') || 'Klient';
@@ -279,55 +369,31 @@
                     else statusText.innerText = `Brakuje ${3 - count} do 10% zniżki`;
                 }
 
-                // === LOGIKA ROZKWITANIA WARSTWOWEJ MANDALI (3 FAZY) ===
-                const loyaltyCount = data.loyaltyCount || 0; // 0 do 3
+                // === LOGIKA ROZKWITANIA MANDALI + INFORMACJA O WAŻNOŚCI 30 DNI ===
+                const loyaltyCount = data.loyaltyCount || 0;
                 const rewardAvailable = data.loyaltyRewardAvailable || false;
                 const rewardExpiresAt = data.loyaltyRewardExpiresAt;
 
                 document.getElementById('loyalty-count').innerText = loyaltyCount;
 
-                // Pobieramy warstwy graficzne
                 const l1 = document.getElementById('mandala-layer-1');
                 const l2 = document.getElementById('mandala-layer-2');
                 const l3 = document.getElementById('mandala-layer-3');
 
-                // Faza 1 (Środek - po 1. wizycie)
-                if (loyaltyCount >= 1 || loyaltyCount >= 3) {
-                    l1.classList.remove('opacity-0', 'scale-90');
-                    l1.classList.add('opacity-100', 'scale-100');
-                } else {
-                    l1.classList.add('opacity-0', 'scale-90');
-                    l1.classList.remove('opacity-100', 'scale-100');
-                }
-
-                // Faza 2 (Środkowy pierścień - po 2. wizycie)
-                if (loyaltyCount >= 2 || loyaltyCount >= 3) {
-                    l2.classList.remove('opacity-0', 'scale-95');
-                    l2.classList.add('opacity-100', 'scale-100');
-                } else {
-                    l2.classList.add('opacity-0', 'scale-95');
-                    l2.classList.remove('opacity-100', 'scale-100');
-                }
-
-                // Faza 3 (Pełny rozkwit zewnętrzny - po 3. wizycie)
-                if (loyaltyCount >= 3 || rewardAvailable) {
-                    l3.classList.remove('opacity-0', 'scale-95');
-                    l3.classList.add('opacity-100', 'scale-100');
-                } else {
-                    l3.classList.add('opacity-0', 'scale-95');
-                    l3.classList.remove('opacity-100', 'scale-100');
-                }
+                if (loyaltyCount >= 1 || loyaltyCount >= 3) l1.classList.remove('opacity-0', 'scale-90'), l1.classList.add('opacity-100', 'scale-100');
+                if (loyaltyCount >= 2 || loyaltyCount >= 3) l2.classList.remove('opacity-0', 'scale-95'), l2.classList.add('opacity-100', 'scale-100');
+                if (loyaltyCount >= 3 || rewardAvailable) l3.classList.remove('opacity-0', 'scale-95'), l3.classList.add('opacity-100', 'scale-100');
 
                 const loyaltyActionContainer = document.getElementById('loyalty-action-container');
                 if (rewardAvailable || loyaltyCount >= 3) {
-                    const expiryInfo = rewardExpiresAt ? `<span class="block text-[10px] text-[#C0392B] font-semibold mt-0.5">⏰ Ważny do: ${rewardExpiresAt}</span>` : '';
+                    const expiryInfo = rewardExpiresAt ? `<span class="block text-[10px] text-[#C0392B] font-semibold mt-0.5">⏰ Kupon ważny do: ${rewardExpiresAt} (30 dni od zdobycia)</span>` : '<span class="block text-[10px] text-[#C0392B] font-semibold mt-0.5">⏰ Kupon ważny przez 30 dni</span>';
                     loyaltyActionContainer.innerHTML = `
                         <div class="bg-[#FDEBD0] border border-[#F5CBA7] rounded-xl p-3 text-center space-y-2 mt-2">
                             <p class="text-xs font-bold text-[#935116]">🪷 Mandala w pełni rozkwitła! Zyskujesz 30 min w kapsule.</p>
                             ${expiryInfo}
-                            <a href="reservation.html?reward=capsule_30" class="block w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-2 rounded-lg text-xs font-semibold transition text-center shadow-xs">
-                                Umów 30 min w Kapsule gratis →
-                            </a>
+                            <button onclick="openRewardModal()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-2 rounded-lg text-xs font-semibold transition cursor-pointer shadow-xs">
+                                Odbierz darmową sesję w Kapsule →
+                            </button>
                         </div>
                     `;
                 } else {

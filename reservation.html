@@ -178,7 +178,7 @@
             <!-- Przycisk płatności / rezerwacji -->
             <button onclick="startPayUPayment()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center space-x-2">
                 <span>💳</span>
-                <span>Zatwierdź i przejdź dalej</span>
+                <span>Zatwierdź i przejdź do płatności</span>
             </button>
 
         </main>
@@ -264,23 +264,6 @@
             updatePriceDisplay();
 
             document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
-
-            // Obsługa nagrody z Mandali Lojalnościowej (darmowe 30 min w kapsule)
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('reward') === 'capsule_30') {
-                const serviceCards = document.querySelectorAll('.service-card');
-                serviceCards.forEach(card => {
-                    if (card.innerText.includes('Kapsuła balansująca')) {
-                        card.click();
-                    }
-                });
-                
-                selectedServiceName = 'Kapsuła balansująca (Nagroda z Mandali - 30 min)';
-                selectedBasePrice = 0;
-                document.getElementById('selected-service-name').innerText = selectedServiceName;
-                document.getElementById('base-price-display').innerText = '0 zł (Nagroda)';
-                document.getElementById('final-price-display').innerText = '0 zł';
-            }
         }
 
         function switchTab(tab) {
@@ -397,32 +380,7 @@
             localStorage.setItem('slow_last_service', selectedServiceName);
             localStorage.setItem('slow_last_datetime', dateTime);
 
-            // Jeśli kwota wynosi 0 zł (Nagroda z Mandali), omijamy PayU i rezerwujemy bezpośrednio
-            if (finalPrice === 0) {
-                try {
-                    const response = await fetch(`${API_BASE}/api/loyalty/book-reward`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email: userEmail,
-                            serviceName: selectedServiceName,
-                            dateTime: dateTime
-                        })
-                    });
-                    const result = await response.json();
-                    if (result.success) {
-                        window.location.href = 'success.html';
-                    } else {
-                        alert('Błąd rezerwacji nagrody: ' + (result.error || 'Nieznany błąd'));
-                    }
-                } catch (err) {
-                    console.error('Błąd sieci:', err);
-                    alert('Nie udało się połączyć z serwerem.');
-                }
-                return;
-            }
-
-            // Standardowa płatność PayU dla kwot > 0 zł
+            // Standardowa płatność PayU
             try {
                 const response = await fetch(`${API_BASE}/api/payment/create`, {
                     method: 'POST',
