@@ -19,6 +19,7 @@
 
     <div class="w-full max-w-md bg-[#FAF8F5] h-screen flex flex-col justify-between shadow-2xl relative">
 
+        <!-- Nagłówek -->
         <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222] shrink-0">
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
@@ -31,31 +32,37 @@
             <p class="text-xs text-[#7C8780]">Obserwuj swoje trendy i dbaj o uważność.</p>
         </div>
 
+        <!-- Główna zawartość -->
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
+            <!-- 1. WYKRES TRENDU I ENERGII (Ciało, Umysł + Fala trendu w tle) -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Wykres Trendu i Energii</span>
+                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Wykres Ciała i Umysłu</span>
                     <span class="text-sm">📈</span>
                 </div>
                 
                 <div class="flex items-baseline space-x-2">
                     <span id="avg-mood-display" class="text-2xl font-bold text-[#F5CBA7]">-- / 10</span>
-                    <span class="text-[10px] text-[#A5B3C2]">Średnia energia</span>
+                    <span class="text-[10px] text-[#A5B3C2]">Średnia witalność</span>
                 </div>
 
-                <div class="bg-[#121821] p-3 rounded-xl relative h-44 w-full">
+                <div class="bg-[#121821] p-3 rounded-xl relative h-48 w-full">
                     <canvas id="moodChart"></canvas>
                 </div>
 
-                <div class="flex justify-between items-center text-[10px] text-[#A5B3C2] pt-1 px-1">
+                <div class="flex flex-wrap justify-between items-center text-[10px] text-[#A5B3C2] pt-1 px-1 gap-1">
                     <div class="flex items-center space-x-1.5">
-                        <span class="w-3 h-1 bg-[#F5CBA7] inline-block rounded-full"></span>
-                        <span>Dzienna energia</span>
+                        <span class="w-3 h-1 bg-[#E59866] inline-block rounded-full"></span>
+                        <span>Ciało</span>
                     </div>
                     <div class="flex items-center space-x-1.5">
-                        <span class="w-3 h-1 bg-[#A9CCE3] inline-block rounded-full border-b border-dashed border-[#A9CCE3]"></span>
-                        <span>Kierunek zmian (Trend)</span>
+                        <span class="w-3 h-1 bg-[#A9CCE3] inline-block rounded-full"></span>
+                        <span>Umysł</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3 h-1 bg-[#F5CBA7] inline-block rounded-full opacity-60"></span>
+                        <span>Fala trendu (90 dni)</span>
                     </div>
                 </div>
 
@@ -64,15 +71,7 @@
                 </p>
             </section>
 
-            <!-- Mikrorytuał SLoW -->
-            <section id="micro-ritual-section" class="bg-[#1C2833] text-[#FAF8F5] border border-[#2E4053] rounded-2xl p-4 shadow-sm space-y-2.5 hidden">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm">✨</span>
-                    <span class="text-xs font-bold uppercase tracking-wider text-[#F5CBA7]">Mikrorytuał SLoW dla Ciebie</span>
-                </div>
-                <p id="micro-ritual-text" class="text-xs text-[#D5D8DC] leading-relaxed"></p>
-            </section>
-
+            <!-- 2. REFLEKSJE I SPOJRZENIE SLOW -->
             <section id="insights-section" class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5 hidden">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm">🌿</span>
@@ -81,30 +80,45 @@
                 <div id="insights-content" class="space-y-2 text-[11px] text-[#4A5550] leading-relaxed"></div>
             </section>
 
-            <section class="bg-gradient-to-br from-[#FAF8F5] to-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs relative overflow-hidden">
-                <div class="flex items-center space-x-2 mb-1.5">
-                    <span class="text-sm">💡</span>
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-[#935116]">Mądrość i Ciekawostka SLoW</span>
+            <!-- 3. MIKRORYTUAŁ SLoW DLA CIEBIE -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm">🧘‍♂️</span>
+                    <span class="text-xs font-bold text-[#1C2E24]">Mikrorytuał SLoW dla Ciebie</span>
                 </div>
-                <p id="trivia-text" class="text-xs text-[#1C2E24] leading-relaxed font-medium">
-                    Ładowanie inspiracji...
+                <p id="daily-ritual-text" class="text-xs text-[#4A5550] leading-relaxed font-medium bg-[#FAF8F5] p-3 rounded-xl border border-[#E2DCD0]">
+                    Ładowanie mikrorytuału...
                 </p>
             </section>
 
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
-                <div class="flex justify-between items-center text-xs">
-                    <span class="font-bold text-[#1C2E24]">Jak oceniasz dzisiejszą energię?</span>
-                    <span id="mood-label" class="font-bold text-[#E59866] text-sm">7 / 10</span>
+            <!-- 4. DWA SUWAKI: CIAŁO I UMYŚL -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-4">
+                <span class="text-xs font-bold text-[#1C2E24] block">Dzisiejsza ocena stanu</span>
+                
+                <!-- Suwak 1: Ciało -->
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-[#4A5550] font-medium">Energia Fizyczna (Ciało)</span>
+                        <span id="physical-label" class="font-bold text-[#E59866] text-sm">7 / 10</span>
+                    </div>
+                    <input type="range" id="physical-range" min="1" max="10" value="7" 
+                           oninput="document.getElementById('physical-label').innerText = this.value + ' / 10'"
+                           class="w-full accent-[#E59866] cursor-pointer py-1">
                 </div>
-                <input type="range" id="mood-range" min="1" max="10" value="7" 
-                       oninput="updateMoodLabel(this.value)"
-                       class="w-full accent-[#E59866] cursor-pointer py-2">
-                <div class="flex justify-between text-[10px] text-[#7C8780]">
-                    <span>Wyczerpanie</span>
-                    <span>Pełnia sił</span>
+
+                <!-- Suwak 2: Umysł -->
+                <div class="space-y-1">
+                    <div class="flex justify-between items-center text-xs">
+                        <span class="text-[#4A5550] font-medium">Klarowność (Umysł)</span>
+                        <span id="mental-label" class="font-bold text-[#3A539B] text-sm">7 / 10</span>
+                    </div>
+                    <input type="range" id="mental-range" min="1" max="10" value="7" 
+                           oninput="document.getElementById('mental-label').innerText = this.value + ' / 10'"
+                           class="w-full accent-[#3A539B] cursor-pointer py-1">
                 </div>
             </section>
 
+            <!-- 5. TAGI: JAKIE ODCZUCIE DOMINUJE -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
                 <span class="text-xs font-bold text-[#1C2E24] block">Jakie odczucie dominuje? (Wybierz tagi)</span>
                 
@@ -124,21 +138,20 @@
                 </div>
             </section>
 
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
-                <label class="block text-xs font-bold text-[#1C2E24]">Za co dzisiaj czujesz wdzięczność?</label>
-                <input type="text" id="journal-gratitude" maxlength="120" placeholder="np. za ciepłą herbatę i chwilę ciszy..." 
-                       class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
-            </section>
-
-            <!-- Refleksyjne Pytanie Dnia -->
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm">🧘‍♀️</span>
-                    <span class="text-xs font-bold text-[#1C2E24]">Pytanie refleksyjne</span>
+            <!-- 6. PYTANIE REFLEKSYJNE I WDZIĘCZNOŚĆ -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
+                <div>
+                    <label id="reflection-question-label" class="block text-xs font-bold text-[#1C2E24] mb-1">Pytanie refleksyjne dnia:</label>
+                    <p id="reflection-question-text" class="text-[11px] text-[#7C8780] italic mb-2">Ładowanie pytania...</p>
+                    <textarea id="journal-reflection" maxlength="250" rows="2" placeholder="Twoja krótka refleksja..." 
+                              class="w-full px-3 py-2 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]"></textarea>
                 </div>
-                <p id="reflection-question-text" class="text-xs text-[#7C8780] italic">Ładowanie pytania...</p>
-                <textarea id="journal-reflection" maxlength="250" placeholder="Twoja refleksja (opcjonalnie)..." 
-                          class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866] resize-none h-16"></textarea>
+
+                <div>
+                    <label class="block text-xs font-bold text-[#1C2E24] mb-1">Za co dzisiaj czujesz wdzięczność?</label>
+                    <input type="text" id="journal-gratitude" maxlength="120" placeholder="np. za ciepłą herbatę i chwilę ciszy..." 
+                           class="w-full px-3 py-2 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
+                </div>
             </section>
 
             <button onclick="saveJournalEntry()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer">
@@ -147,6 +160,7 @@
 
         </main>
 
+        <!-- Dolna nawigacja -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
             <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
@@ -180,10 +194,6 @@
         let selectedTags = [];
         let moodChartInstance = null;
 
-        function updateMoodLabel(val) {
-            document.getElementById('mood-label').innerText = `${val} / 10`;
-        }
-
         function toggleTag(btn) {
             const tagText = btn.innerText;
             if (btn.classList.contains('bg-[#1C2833]')) {
@@ -197,6 +207,25 @@
             }
         }
 
+        // Ładowanie dynamicznej treści z bazy (mikrorytuał i pytanie refleksyjne)
+        async function loadDailyContent() {
+            try {
+                const res = await fetch(`${API_BASE}/api/journal/daily-content`);
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('daily-ritual-text').innerText = data.ritual;
+                    document.getElementById('reflection-question-text').innerText = data.question;
+                }
+            } catch (err) {
+                console.error('Błąd pobierania treści dziennika:', err);
+                document.getElementById('daily-ritual-text').innerText = "Zatrzymaj się na minutę, oderwij wzrok od ekranu i spójrz w dal.";
+                document.getElementById('reflection-question-text').innerText = "Co w tej chwili najbardziej potrzebuje Twoje ciało?";
+            }
+        }
+
+        loadDailyContent();
+
+        // Ładowanie statystyk i wykresu (Ciało, Umysł + Fala trendu)
         async function loadUserStats() {
             const userEmail = localStorage.getItem('slow_user_email');
             if (!userEmail) return;
@@ -235,42 +264,19 @@
             }
         }
 
-        async function loadDailyContent() {
-            try {
-                const res = await fetch(`${API_BASE}/api/journal/daily-content`);
-                const data = await res.json();
-                if (data.success) {
-                    if (data.ritual) {
-                        document.getElementById('micro-ritual-text').innerText = data.ritual;
-                        document.getElementById('micro-ritual-section').classList.remove('hidden');
-                    }
-                    if (data.question) {
-                        document.getElementById('reflection-question-text').innerText = data.question;
-                    }
-                }
-            } catch (err) {
-                console.error('Błąd pobierania treści dziennika:', err);
-            }
-        }
-
-        loadDailyContent();
-
         function renderChart(historyData) {
             const ctx = document.getElementById('moodChart').getContext('2d');
             const labels = historyData.map(item => item.date);
-            const moods = historyData.map(item => item.mood);
+            const physicalData = historyData.map(item => item.physical);
+            const mentalData = historyData.map(item => item.mental);
 
+            // Obliczanie fali trendu 90-dniowego (średnia ruchoma z ciała i umysłu)
+            const combinedData = historyData.map(item => ((item.physical + item.mental) / 2));
             const windowSize = 3;
-            const trendData = moods.map((val, index, arr) => {
-                if (index < windowSize - 1) {
-                    const slice = arr.slice(0, index + 1);
-                    const sum = slice.reduce((a, b) => a + b, 0);
-                    return (sum / slice.length).toFixed(1);
-                } else {
-                    const slice = arr.slice(index - windowSize + 1, index + 1);
-                    const sum = slice.reduce((a, b) => a + b, 0);
-                    return (sum / windowSize).toFixed(1);
-                }
+            const trendWave = combinedData.map((val, index, arr) => {
+                const slice = arr.slice(Math.max(0, index - windowSize + 1), index + 1);
+                const sum = slice.reduce((a, b) => a + b, 0);
+                return (sum / slice.length).toFixed(1);
             });
 
             if (moodChartInstance) moodChartInstance.destroy();
@@ -281,27 +287,37 @@
                     labels: labels,
                     datasets: [
                         {
-                            label: 'Dzienna energia',
-                            data: moods,
+                            label: 'Fala trendu (90 dni)',
+                            data: trendWave,
                             borderColor: '#F5CBA7',
-                            backgroundColor: 'rgba(245, 203, 167, 0.05)',
-                            borderWidth: 2,
-                            tension: 0.3,
+                            backgroundColor: 'rgba(245, 203, 167, 0.15)',
+                            borderWidth: 1.5,
+                            tension: 0.4,
                             fill: true,
-                            pointBackgroundColor: '#E59866',
-                            pointRadius: 4,
-                            order: 2
+                            pointRadius: 0,
+                            order: 3
                         },
                         {
-                            label: 'Ogólny kierunek (Trend)',
-                            data: trendData,
-                            borderColor: '#A9CCE3',
-                            borderWidth: 2.5,
-                            borderDash: [4, 4],
-                            tension: 0.4,
+                            label: 'Ciało',
+                            data: physicalData,
+                            borderColor: '#E59866',
+                            borderWidth: 2,
+                            tension: 0.3,
                             fill: false,
-                            pointRadius: 0,
+                            pointBackgroundColor: '#E59866',
+                            pointRadius: 3,
                             order: 1
+                        },
+                        {
+                            label: 'Umysł',
+                            data: mentalData,
+                            borderColor: '#A9CCE3',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            pointBackgroundColor: '#A9CCE3',
+                            pointRadius: 3,
+                            order: 2
                         }
                     ]
                 },
@@ -336,21 +352,6 @@
             });
         }
 
-        async function loadSlowTrivia() {
-            try {
-                const res = await fetch(`${API_BASE}/api/journal/trivia`);
-                const data = await res.json();
-                if (data.success && data.trivia) {
-                    document.getElementById('trivia-text').innerText = data.trivia.text;
-                }
-            } catch (err) {
-                console.error('Błąd pobierania ciekawostki:', err);
-                document.getElementById('trivia-text').innerText = "Moksoterapia i homeopatia pomagają przywrócić naturalną równowagę organizmu.";
-            }
-        }
-
-        loadSlowTrivia();
-
         async function saveJournalEntry() {
             const userEmail = localStorage.getItem('slow_user_email');
             if (!userEmail) {
@@ -358,16 +359,19 @@
                 return;
             }
 
-            const mood = document.getElementById('mood-range').value;
+            const physical = document.getElementById('physical-range').value;
+            const mental = document.getElementById('mental-range').value;
+            const mood = Math.round((parseInt(physical) + parseInt(mental)) / 2); // średnia jako ogólny nastrój
             const effect = selectedTags.join(', ');
-            const gratitude = document.getElementById('journal-gratitude').value.trim();
             const reflection = document.getElementById('journal-reflection').value.trim();
+            const gratitude = document.getElementById('journal-gratitude').value.trim();
+            const timeOfDay = new Date().getHours() < 12 ? 'Rano' : (new Date().getHours() < 18 ? 'Popołudnie' : 'Wieczór');
 
             try {
                 const response = await fetch(`${API_BASE}/api/journal`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ email: userEmail, mood, effect, gratitude, reflection })
+                    body: JSON.stringify({ email: userEmail, mood, physical, mental, effect, gratitude, timeOfDay, reflection })
                 });
 
                 const result = await response.json();
