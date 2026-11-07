@@ -43,14 +43,6 @@
                 </div>
 
                 <div id="list-services" class="space-y-2.5">
-                    <div id="test-payment-card" onclick="selectService('Testowa Płatność PayU', 1, this)" class="service-card bg-[#FFF3E0] border-2 border-dashed border-[#D35400] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#D35400]">🧪 Testowa Płatność PayU</span>
-                            <span class="text-xs font-extrabold text-white bg-[#D35400] px-2 py-0.5 rounded-lg">1 zł netto</span>
-                        </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Pozycja diagnostyczna do testowania bramki płatności. Czas trwania: 15 min.</p>
-                    </div>
-
                     <div onclick="selectService('Bańki Chińskie', 130, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
                             <span class="text-sm font-bold text-[#1C2E24]">Bańki Chińskie</span>
@@ -149,11 +141,11 @@
             <!-- Podsumowanie koszyka -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md space-y-2">
                 <div class="text-[11px] text-[#A5B3C2] pb-1 border-b border-[#2E4053]">
-                    Wybrana usługa / koszyk: <strong id="selected-service-name" class="text-white">Testowa Płatność PayU</strong>
+                    Wybrana usługa / koszyk: <strong id="selected-service-name" class="text-white">Bańki Chińskie</strong>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-[#D5D8DC]">Cena bazowa:</span>
-                    <span id="base-price-display" class="font-semibold">1 zł</span>
+                    <span id="base-price-display" class="font-semibold">130 zł</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-[#D5D8DC]">Twój rabat z poleceń:</span>
@@ -161,7 +153,7 @@
                 </div>
                 <div class="border-t border-[#2E4053] pt-2 flex justify-between items-center text-sm font-bold">
                     <span>Do zapłaty:</span>
-                    <span id="final-price-display" class="text-base text-[#E59866]">1 zł</span>
+                    <span id="final-price-display" class="text-base text-[#E59866]">130 zł</span>
                 </div>
             </section>
 
@@ -229,21 +221,14 @@
             window.location.href = 'login.html';
         }
 
-        const ENABLE_TEST_PAYMENT = true; 
-
         let selectedTimeSlot = null;
         let userDiscountPercent = 0;
-        let selectedServiceName = ENABLE_TEST_PAYMENT ? "Testowa Płatność PayU" : "Bańki Chińskie";
-        let selectedBasePrice = ENABLE_TEST_PAYMENT ? 1 : 130;
+        let selectedServiceName = "Bańki Chińskie";
+        let selectedBasePrice = 130;
 
         const packageNames = ['HomeoBalans', 'TCM', 'TCMx4', 'Balansx4', 'Pakiet TCM', 'Karnet TCMx4', 'Karnet Balansx4'];
 
         async function initReservationView() {
-            const testCard = document.getElementById('test-payment-card');
-            if (testCard && !ENABLE_TEST_PAYMENT) {
-                testCard.style.display = 'none';
-            }
-
             const userEmail = localStorage.getItem('slow_user_email');
             if (userEmail) {
                 try {
@@ -264,14 +249,10 @@
             tomorrow.setDate(tomorrow.getDate() + 1);
             document.getElementById('reservation-date').valueAsDate = tomorrow;
             
-            const defaultCard = ENABLE_TEST_PAYMENT ? testCard : document.querySelector('.service-card:not(#test-payment-card)');
+            const defaultCard = document.querySelector('.service-card');
             if (defaultCard) {
                 defaultCard.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
-                if (ENABLE_TEST_PAYMENT) {
-                    defaultCard.classList.remove('bg-[#FFF3E0]');
-                } else {
-                    defaultCard.classList.remove('bg-[#F0ECE1]');
-                }
+                defaultCard.classList.remove('bg-[#F0ECE1]');
             }
 
             document.getElementById('selected-service-name').innerText = selectedServiceName;
@@ -307,15 +288,11 @@
 
             document.querySelectorAll('.service-card').forEach(card => {
                 card.classList.remove('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
-                if (card.id === 'test-payment-card') {
-                    card.classList.add('bg-[#FFF3E0]');
-                } else {
-                    card.classList.add('bg-[#F0ECE1]');
-                }
+                card.classList.add('bg-[#F0ECE1]');
             });
 
             if (element) {
-                element.classList.remove('bg-[#F0ECE1]', 'bg-[#FFF3E0]');
+                element.classList.remove('bg-[#F0ECE1]');
                 element.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
             }
 
@@ -371,6 +348,27 @@
             selectedTimeSlot = slot;
         }
 
+        // Funkcja pomocnicza korygująca strefę czasową na froncie dla poprawnego zapisu w kalendarzu
+        function getCorrectedDateTime(dateStr, timeStr) {
+            const d = new Date(`${dateStr}T12:00:00Z`);
+            const warsawHourStr = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Europe/Warsaw',
+                hour: 'numeric',
+                hour12: false
+            }).format(d);
+            const utcHourStr = d.getUTCHours();
+            let offsetHours = parseInt(warsawHourStr) - utcHourStr;
+            if (offsetHours > 12) offsetHours -= 24;
+            if (offsetHours < -12) offsetHours += 24;
+
+            const [selHour, selMin] = timeStr.split(':').map(Number);
+            let utcHour = selHour - offsetHours;
+            const formattedUtcHour = String(utcHour).padStart(2, '0');
+            const formattedMin = String(selMin).padStart(2, '0');
+
+            return `${dateStr}T${formattedUtcHour}:${formattedMin}:00`;
+        }
+
         async function startPayUPayment() {
             const termsChecked = document.getElementById('terms-checkbox').checked;
             if (!termsChecked) {
@@ -391,7 +389,8 @@
                 return;
             }
 
-            const dateTime = `${date}T${selectedTimeSlot}:00`;
+            // Używamy korekty strefy czasowej, żeby kalendarz Google zapisał właściwą godzinę
+            const dateTime = getCorrectedDateTime(date, selectedTimeSlot);
 
             localStorage.setItem('slow_last_service', selectedServiceName);
             localStorage.setItem('slow_last_datetime', dateTime);
