@@ -21,7 +21,7 @@
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
             </div>
-            <a href="index.html" class="text-xs text-[#A5B3C2] hover:text-white transition">✕ Wróć</a>
+            <a href="index_2.html" class="text-xs text-[#A5B3C2] hover:text-white transition">✕ Wróć</a>
         </header>
 
         <div class="px-6 pt-3 pb-1 shrink-0">
@@ -31,7 +31,7 @@
 
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
-            <!-- Wybór usług / pakietów -->
+            <!-- Wybór usług / pakietów z pełnym opisem, ceną i czasem trwania -->
             <section class="space-y-3">
                 <div class="grid grid-cols-2 gap-2 p-1 bg-[#EFECE6] rounded-2xl border border-[#E2DCD0]">
                     <button onclick="switchTab('services')" id="tab-services" class="py-2.5 px-3 rounded-xl text-xs font-extrabold transition shadow-xs bg-[#1C2833] text-white cursor-pointer">
@@ -48,7 +48,7 @@
                             <span class="text-sm font-bold text-[#D35400]">🧪 Testowa Płatność PayU</span>
                             <span class="text-xs font-extrabold text-white bg-[#D35400] px-2 py-0.5 rounded-lg">1 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Pozycja diagnostyczna do testowania bramki płatności.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Pozycja diagnostyczna do testowania bramki płatności. Czas trwania: 15 min.</p>
                     </div>
 
                     <div onclick="selectService('Bańki Chińskie', 130, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -56,7 +56,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Bańki Chińskie</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">130 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-wspierający z wykorzystaniem baniek.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-wspierający z wykorzystaniem baniek. Czas trwania: 60 min.</p>
                     </div>
 
                     <div onclick="selectService('Konchowanie uszu', 130, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -64,7 +64,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Konchowanie uszu</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">130 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjny i dogrzewający - konchowanie uszu + masaż twarzy.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjny i dogrzewający - konchowanie uszu + masaż twarzy. Czas trwania: 60 min.</p>
                     </div>
 
                     <div onclick="selectService('Moksoterapia', 100, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -72,7 +72,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Moksoterapia</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">100 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-energetyczny przywracający równowagę.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-energetyczny przywracający równowagę. Czas trwania: 45 min.</p>
                     </div>
 
                     <div onclick="selectService('Homeopatia', 300, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -80,7 +80,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Konsultacja Homeopatyczna</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">300 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja w zakresie naturalnego wspierania organizmu.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja w zakresie naturalnego wspierania organizmu. Czas trwania: 90 min.</p>
                     </div>
 
                     <div onclick="selectService('Kapsuła balansująca', 150, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -88,7 +88,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Kapsuła balansująca</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">150 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Głęboka sesja relaksacyjna i wyciszająca.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Głęboka sesja relaksacyjna i wyciszająca. Czas trwania: 60 min.</p>
                     </div>
 
                     <div onclick="selectService('Access Bars', 200, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -96,7 +96,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Access Bars</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">200 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Lekki dotyk 32 punktów na głowie wspierający wyciszenie i redukcję napięcia.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Lekki dotyk 32 punktów na głowie wspierający wyciszenie i redukcję napięcia. Czas trwania: 60 min.</p>
                     </div>
                 </div>
 
@@ -106,7 +106,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">HomeoBalans</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">500 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja Homeopatyczna + 2 sesje w kapsule balansującej.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja Homeopatyczna + 2 sesje w kapsule balansującej. Czas trwania: pakiet wielosesyjny.</p>
                     </div>
 
                     <div onclick="selectService('TCM', 300, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -114,7 +114,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Pakiet TCM</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">300 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Sesja wspierająca z wykorzystaniem baniek, moksy i konchowania.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Sesja wspierająca z wykorzystaniem baniek, moksy i konchowania. Czas trwania: 90 min.</p>
                     </div>
 
                     <div onclick="selectService('TCMx4', 450, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -122,7 +122,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Karnet TCMx4</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">450 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet obejmujący 4 zabiegi: Bańki Chińskie.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet obejmujący 4 zabiegi: Bańki Chińskie (4x 60 min).</p>
                     </div>
 
                     <div onclick="selectService('Balansx4', 480, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -130,7 +130,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Karnet Balansx4</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">480 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet obejmujący 4 sesje w kapsule balansującej.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet obejmujący 4 sesje w kapsule balansującej (4x 60 min).</p>
                     </div>
                 </div>
             </section>
@@ -165,12 +165,16 @@
                 </div>
             </section>
 
-            <!-- Zgody formalne -->
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-3.5 shadow-xs space-y-2.5">
-                <label class="flex items-start space-x-2.5 cursor-pointer">
+            <!-- Zgody formalne oraz informacja o prawie odstąpienia od umowy -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
+                <div class="text-[11px] text-[#55605B] bg-[#FAF8F5] p-3 rounded-xl border border-[#E2DCD0] leading-relaxed">
+                    ℹ️ Dokonując rezerwacji usługi wykonywanej w konkretnym terminie, przyjmuję do wiadomości, że zgodnie z regulaminem nie przysługuje mi ustawowe prawo odstąpienia od umowy (art. 38 ust. 1 pkt 12 ustawy o prawach konsumenta).
+                </div>
+
+                <label class="flex items-start space-x-2.5 cursor-pointer pt-1">
                     <input type="checkbox" id="terms-checkbox" class="mt-0.5 accent-[#1C2833] w-4 h-4 cursor-pointer">
                     <span class="text-[11px] text-[#55605B] leading-relaxed">
-                        Akceptuję postanowienia <a href="regulamin.html" target="_blank" class="text-[#3A539B] underline font-bold">Regulaminu Serwisu i Polityki Prywatności (RODO)</a> oraz wyrażam zgodę na przetwarzanie danych.
+                        Zapoznałem/am się i akceptuję postanowienia <a href="regulamin_2.html" target="_blank" class="text-[#3A539B] underline font-bold">Regulaminu Serwisu</a> oraz <a href="regulamin_2.html" target="_blank" class="text-[#3A539B] underline font-bold">Polityki Prywatności (RODO)</a>.
                     </span>
                 </label>
             </section>
@@ -178,25 +182,37 @@
             <!-- Przycisk płatności / rezerwacji -->
             <button onclick="startPayUPayment()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center space-x-2">
                 <span>💳</span>
-                <span>Zatwierdź i przejdź do płatności</span>
+                <span>Zatwierdź i przejdź do płatności (PayU)</span>
             </button>
+
+            <!-- Stopka z linkami -->
+            <footer class="pt-4 pb-2 text-center text-[10px] text-[#7C8780] space-y-1 border-t border-[#E2DCD0]">
+                <p>Fundacja SLoW • ul. Młyńska 34a, Kórnik</p>
+                <div class="flex justify-center space-x-3 pt-1">
+                    <a href="regulamin_2.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <span>•</span>
+                    <a href="regulamin_2.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                    <span>•</span>
+                    <a href="profile_2.html" class="hover:underline text-[#3A539B] font-medium">Kontakt</a>
+                </div>
+            </footer>
 
         </main>
 
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
-            <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="index_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
                 <span class="text-[10px] font-medium mt-0.5">Strefa</span>
             </a>
-            <a href="journal.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="journal_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🧘‍♀️</span>
                 <span class="text-[10px] font-medium mt-0.5">Dziennik</span>
             </a>
-            <a href="reservation.html" class="flex flex-col items-center text-[#3A539B]">
+            <a href="reservation_2.html" class="flex flex-col items-center text-[#3A539B]">
                 <span class="text-lg">📅</span>
                 <span class="text-[10px] font-semibold mt-0.5">Rezerwacje</span>
             </a>
-            <a href="profile.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="profile_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">⚙️</span>
                 <span class="text-[10px] font-medium mt-0.5">Profil</span>
             </a>
@@ -210,7 +226,7 @@
             : 'https://slow-backend.onrender.com';
 
         if (localStorage.getItem('slow_user_logged') !== 'true') {
-            window.location.href = 'login.html';
+            window.location.href = 'login_2.html';
         }
 
         const ENABLE_TEST_PAYMENT = true; 

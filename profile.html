@@ -80,7 +80,7 @@
                     <p><strong>Miejsce świadczenia usług:</strong> ul. Młyńska 34a, 62-035 Kórnik</p>
                     <p><strong>NIP:</strong> 7773458851</p>
                     <p><strong>REGON:</strong> 543460385</p>
-                    <p class="pt-1 text-[10px] text-[#7C8780]">Kontakt: <a href="mailto:biuro@slowfoundation.com" class="text-[#3A539B] underline">biuro@slowfoundation.com</a>[cite: 7]</p>
+                    <p class="pt-1 text-[10px] text-[#7C8780]">Kontakt: <a href="mailto:biuro@slowfoundation.com" class="text-[#3A539B] underline">biuro@slowfoundation.com</a></p>
                 </div>
             </section>
 
@@ -93,13 +93,13 @@
                 <div class="space-y-2 text-[11px] text-[#55605B] leading-relaxed">
                     <div class="flex items-start space-x-2">
                         <span class="text-emerald-600 font-bold shrink-0">✓</span>
-                        <span>Akceptacja Regulaminu Serwisu oraz Polityki Prywatności (Zgoda udzielona podczas rejestracji/rezerwacji).</span>
+                        <span>Akceptacja <a href="regulamin_3.html" class="text-[#3A539B] underline">Regulaminu Serwisu</a> oraz <a href="regulamin_3.html" class="text-[#3A539B] underline">Polityki Prywatności</a>.</span>
                     </div>
                     <div class="flex items-start space-x-2">
                         <span class="text-emerald-600 font-bold shrink-0">✓</span>
-                        <span>Zgoda na przetwarzanie danych osobowych w celu obsługi rezerwacji oraz programu poleceń.</span>
+                        <span>Zgoda na przetwarzanie danych osobowych w celu obsługi rezerwacji oraz programu poleceń (PayU).</span>
                     </div>
-                    <p class="pt-1 text-[10px] text-[#7C8780]">Masz prawo do wglądu, sprostowania oraz żądania usunięcia swoich danych. Skontaktuj się z nami mailowo w celu realizacji praw.</p>
+                    <p class="pt-1 text-[10px] text-[#7C8780]">Masz prawo do wglądu, sprostowania oraz żądania usunięcia swoich danych. Skontaktuj się z nami mailowo.</p>
                 </div>
             </section>
 
@@ -154,23 +154,32 @@
                 </div>
             </section>
 
+            <!-- Stopka w profilu -->
+            <footer class="pt-2 pb-4 text-center text-[10px] text-[#7C8780] space-y-1">
+                <div class="flex justify-center space-x-3">
+                    <a href="regulamin_3.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <span>•</span>
+                    <a href="regulamin_3.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                </div>
+            </footer>
+
         </main>
 
         <!-- Dolna nawigacja PWA -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
-            <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="index_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
                 <span class="text-[10px] font-medium mt-0.5">Strefa</span>
             </a>
-            <a href="journal.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="journal_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🧘‍♀️</span>
                 <span class="text-[10px] font-medium mt-0.5">Dziennik</span>
             </a>
-            <a href="reservation.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="reservation_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">📅</span>
                 <span class="text-[10px] font-medium mt-0.5">Rezerwacje</span>
             </a>
-            <a href="profile.html" class="flex flex-col items-center text-[#D35400]">
+            <a href="profile_3.html" class="flex flex-col items-center text-[#D35400]">
                 <span class="text-lg">⚙️</span>
                 <span class="text-[10px] font-bold mt-0.5">Profil</span>
             </a>
@@ -184,7 +193,7 @@
             : 'https://slow-backend.onrender.com';
 
         if (localStorage.getItem('slow_user_logged') !== 'true') {
-            window.location.href = 'login.html';
+            window.location.href = 'login_2.html';
         }
 
         async function loadProfileView() {
@@ -319,7 +328,7 @@
 
         function logout() {
             localStorage.clear();
-            window.location.href = 'login.html';
+            window.location.href = 'login_2.html';
         }
 
         loadProfileView();
