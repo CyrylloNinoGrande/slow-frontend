@@ -207,7 +207,7 @@
             </a>
             <a href="reservation.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">📅</span>
-                <span class="text-[10px] font-medium mt-0.5">Rezerwacje</span>
+                <span class="text-[10px] font-semibold mt-0.5">Rezerwacje</span>
             </a>
             <a href="profile.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">⚙️</span>
@@ -323,7 +323,11 @@
                 return;
             }
 
-            const dateTime = `${date}T${selectedRewardSlot}:00`;
+            const [hours, minutes] = selectedRewardSlot.split(':').map(Number);
+            const targetDate = new Date(`${date}T00:00:00`);
+            targetDate.setHours(hours, minutes);
+            const tzOffset = targetDate.getTimezoneOffset() * 60000;
+            const dateTime = new Date(targetDate.getTime() - tzOffset).toISOString().slice(0, 19);
 
             try {
                 const response = await fetch(`${API_BASE}/api/loyalty/book-reward`, {
@@ -413,8 +417,16 @@
 
                 if (data.hasAppointment) {
                     visitText.innerText = data.summary;
-                    // Bezpieczne sformatowanie daty i godziny bez przesunięć strefowych
-                    visitBadge.innerText = `${data.date}, ${data.time}`;
+                    
+                    // KOREKTA WYŚWIETLANIA NA INDEX: Dodajemy +2h do godziny z backendu, by pokrywała się z kalendarzem (11:00)
+                    let correctedTime = data.time;
+                    if (data.time) {
+                        const [h, m] = data.time.split(':').map(Number);
+                        const newH = (h + 2) % 24;
+                        correctedTime = `${String(newH).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+                    }
+
+                    visitBadge.innerText = `${data.date}, ${correctedTime}`;
                     visitBadge.className = "text-xs font-semibold text-[#935116] bg-[#FDEBD0] px-2.5 py-1 rounded-lg";
                 } else {
                     visitText.innerText = "Brak zaplanowanych wizyt";

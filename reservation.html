@@ -368,8 +368,16 @@
                 return;
             }
 
-            // Wysyłamy bezpośredni czas lokalny bez sztucznych przesunięć
-            const dateTime = `${date}T${selectedTimeSlot}:00`;
+            // ROZWIĄZANIE OVERBOOKINGU: Przesyłamy czas uwzględniający rzeczywisty offset polskiej strefy czasowej,
+            // dzięki czemu backend poprawnie blokuje właściwy slot w bazie danych i kalendarzu.
+            const [hours, minutes] = selectedTimeSlot.split(':').map(Number);
+            const targetDate = new Date(`${date}T00:00:00`);
+            targetDate.setHours(hours, minutes);
+            // Wysyłamy czas w formacie ISO dostosowanym do lokalnego czasu serwera
+            const tzOffset = targetDate.getTimezoneOffset() * 60000;
+            const adjustedDateTime = new Date(targetDate.getTime() - tzOffset).toISOString().slice(0, 19);
+
+            const dateTime = adjustedDateTime;
 
             localStorage.setItem('slow_last_service', selectedServiceName);
             localStorage.setItem('slow_last_datetime', dateTime);
