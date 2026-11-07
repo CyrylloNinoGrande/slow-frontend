@@ -368,9 +368,7 @@
                 return;
             }
 
-            // BEZPOŚREDNI ZAPIS BEZ PRZESUNIĘĆ:
-            // Łączymy datę (np. 2026-11-08) i wybraną godzinę (np. 13:00) bezpośrednio w ciąg ISO.
-            // Dzięki temu serwer i kalendarz Google odczytają dokładnie tę godzinę, którą kliknięto.
+            // Czysty string bez obiektów Date – wysyła dokładnie to, co użytkownik kliknął
             const dateTime = `${date}T${selectedTimeSlot}:00`;
 
             localStorage.setItem('slow_last_service', selectedServiceName);
