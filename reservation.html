@@ -368,16 +368,10 @@
                 return;
             }
 
-            // ROZWIĄZANIE OVERBOOKINGU: Przesyłamy czas uwzględniający rzeczywisty offset polskiej strefy czasowej,
-            // dzięki czemu backend poprawnie blokuje właściwy slot w bazie danych i kalendarzu.
-            const [hours, minutes] = selectedTimeSlot.split(':').map(Number);
-            const targetDate = new Date(`${date}T00:00:00`);
-            targetDate.setHours(hours, minutes);
-            // Wysyłamy czas w formacie ISO dostosowanym do lokalnego czasu serwera
-            const tzOffset = targetDate.getTimezoneOffset() * 60000;
-            const adjustedDateTime = new Date(targetDate.getTime() - tzOffset).toISOString().slice(0, 19);
-
-            const dateTime = adjustedDateTime;
+            // BEZPOŚREDNI ZAPIS BEZ PRZESUNIĘĆ:
+            // Łączymy datę (np. 2026-11-08) i wybraną godzinę (np. 13:00) bezpośrednio w ciąg ISO.
+            // Dzięki temu serwer i kalendarz Google odczytają dokładnie tę godzinę, którą kliknięto.
+            const dateTime = `${date}T${selectedTimeSlot}:00`;
 
             localStorage.setItem('slow_last_service', selectedServiceName);
             localStorage.setItem('slow_last_datetime', dateTime);
