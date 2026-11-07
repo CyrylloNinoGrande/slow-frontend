@@ -24,7 +24,7 @@
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
             </div>
-            <a href="index_2.html" class="text-xs text-[#A5B3C2] hover:text-white transition">✕ Zamknij</a>
+            <a href="index.html" class="text-xs text-[#A5B3C2] hover:text-white transition">✕ Zamknij</a>
         </header>
 
         <div class="px-6 pt-3 pb-1 shrink-0">
@@ -167,9 +167,9 @@
             <!-- Stopka w dzienniku -->
             <footer class="pt-2 pb-2 text-center text-[10px] text-[#7C8780] space-y-1">
                 <div class="flex justify-center space-x-3">
-                    <a href="regulamin_3.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
                     <span>•</span>
-                    <a href="regulamin_3.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
                 </div>
             </footer>
 
@@ -177,19 +177,19 @@
 
         <!-- Dolna nawigacja -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
-            <a href="index_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
                 <span class="text-[10px] font-medium mt-0.5">Strefa</span>
             </a>
-            <a href="journal_2.html" class="flex flex-col items-center text-[#3A539B]">
+            <a href="journal.html" class="flex flex-col items-center text-[#3A539B]">
                 <span class="text-lg">🧘‍♀️</span>
                 <span class="text-[10px] font-semibold mt-0.5">Dziennik</span>
             </a>
-            <a href="reservation_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="reservation.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">📅</span>
                 <span class="text-[10px] font-medium mt-0.5">Rezerwacje</span>
             </a>
-            <a href="profile_3.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="profile.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">⚙️</span>
                 <span class="text-[10px] font-medium mt-0.5">Profil</span>
             </a>
@@ -203,7 +203,7 @@
             : 'https://slow-backend.onrender.com';
 
         if (localStorage.getItem('slow_user_logged') !== 'true') {
-            window.location.href = 'login_2.html';
+            window.location.href = 'login.html';
         }
 
         let selectedTags = [];

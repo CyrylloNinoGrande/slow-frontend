@@ -93,7 +93,7 @@
                 <div class="space-y-2 text-[11px] text-[#55605B] leading-relaxed">
                     <div class="flex items-start space-x-2">
                         <span class="text-emerald-600 font-bold shrink-0">✓</span>
-                        <span>Akceptacja <a href="regulamin_3.html" class="text-[#3A539B] underline">Regulaminu Serwisu</a> oraz <a href="regulamin_3.html" class="text-[#3A539B] underline">Polityki Prywatności</a>.</span>
+                        <span>Akceptacja <a href="regulamin.html" class="text-[#3A539B] underline">Regulaminu Serwisu</a> oraz <a href="regulamin.html" class="text-[#3A539B] underline">Polityki Prywatności</a>.</span>
                     </div>
                     <div class="flex items-start space-x-2">
                         <span class="text-emerald-600 font-bold shrink-0">✓</span>
@@ -157,9 +157,9 @@
             <!-- Stopka w profilu -->
             <footer class="pt-2 pb-4 text-center text-[10px] text-[#7C8780] space-y-1">
                 <div class="flex justify-center space-x-3">
-                    <a href="regulamin_3.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
                     <span>•</span>
-                    <a href="regulamin_3.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
                 </div>
             </footer>
 
@@ -167,19 +167,19 @@
 
         <!-- Dolna nawigacja PWA -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
-            <a href="index_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
                 <span class="text-[10px] font-medium mt-0.5">Strefa</span>
             </a>
-            <a href="journal_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="journal.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🧘‍♀️</span>
                 <span class="text-[10px] font-medium mt-0.5">Dziennik</span>
             </a>
-            <a href="reservation_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="reservation.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">📅</span>
                 <span class="text-[10px] font-medium mt-0.5">Rezerwacje</span>
             </a>
-            <a href="profile_3.html" class="flex flex-col items-center text-[#D35400]">
+            <a href="profile.html" class="flex flex-col items-center text-[#D35400]">
                 <span class="text-lg">⚙️</span>
                 <span class="text-[10px] font-bold mt-0.5">Profil</span>
             </a>
@@ -193,7 +193,7 @@
             : 'https://slow-backend.onrender.com';
 
         if (localStorage.getItem('slow_user_logged') !== 'true') {
-            window.location.href = 'login_2.html';
+            window.location.href = 'login.html';
         }
 
         async function loadProfileView() {
@@ -328,7 +328,7 @@
 
         function logout() {
             localStorage.clear();
-            window.location.href = 'login_2.html';
+            window.location.href = 'login.html';
         }
 
         loadProfileView();

@@ -115,7 +115,7 @@
 
             <!-- Rezerwacja standardowa -->
             <section>
-                <a href="reservation_2.html" class="block bg-[#E59866] hover:bg-[#DC7633] text-white p-4 rounded-2xl shadow-md transition text-center group">
+                <a href="reservation.html" class="block bg-[#E59866] hover:bg-[#DC7633] text-white p-4 rounded-2xl shadow-md transition text-center group">
                     <div class="font-bold text-sm mb-0.5">Zarezerwuj Legalny Wypoczynek</div>
                     <p class="text-[11px] text-[#FAD7A0] opacity-95">Wybierz termin i wykorzystaj swój rabat</p>
                 </a>
@@ -153,7 +153,7 @@
                     <h3 class="text-xs font-bold text-[#F5CBA7] mt-1">Dziennik SLoW</h3>
                     <p class="text-[10px] text-[#D5D8DC]">Zatrzymaj się, oceń energię i zapisz wdzięczność.</p>
                 </div>
-                <a href="journal_2.html" class="bg-[#E59866] hover:bg-[#DC7633] text-white px-4 py-2.5 rounded-xl font-bold text-xs transition cursor-pointer shrink-0">
+                <a href="journal.html" class="bg-[#E59866] hover:bg-[#DC7633] text-white px-4 py-2.5 rounded-xl font-bold text-xs transition cursor-pointer shrink-0">
                     Otwórz →
                 </a>
             </section>
@@ -162,11 +162,11 @@
             <footer class="pt-6 pb-2 text-center text-[10px] text-[#7C8780] space-y-1 border-t border-[#E2DCD0]">
                 <p>Fundacja SLoW • Płatności: PayU</p>
                 <div class="flex justify-center space-x-3 pt-1">
-                    <a href="regulamin_2.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
                     <span>•</span>
-                    <a href="regulamin_2.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
                     <span>•</span>
-                    <a href="profile_2.html" class="hover:underline text-[#3A539B] font-medium">Kontakt</a>
+                    <a href="profile.html" class="hover:underline text-[#3A539B] font-medium">Kontakt</a>
                 </div>
             </footer>
 
@@ -201,19 +201,19 @@
 
         <!-- Dolna nawigacja -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
-            <a href="index_2.html" class="flex flex-col items-center text-[#3A539B]">
+            <a href="index.html" class="flex flex-col items-center text-[#3A539B]">
                 <span class="text-lg">🏡</span>
                 <span class="text-[10px] font-semibold mt-0.5">Strefa</span>
             </a>
-            <a href="journal_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="journal.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🧘‍♀️</span>
                 <span class="text-[10px] font-medium mt-0.5">Dziennik</span>
             </a>
-            <a href="reservation_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="reservation.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">📅</span>
                 <span class="text-[10px] font-medium mt-0.5">Rezerwacje</span>
             </a>
-            <a href="profile_2.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
+            <a href="profile.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">⚙️</span>
                 <span class="text-[10px] font-medium mt-0.5">Profil</span>
             </a>
@@ -227,14 +227,14 @@
             : 'https://slow-backend.onrender.com';
 
         if (localStorage.getItem('slow_user_logged') !== 'true') {
-            window.location.href = 'login_2.html';
+            window.location.href = 'login.html';
         }
 
         let selectedRewardSlot = null;
 
         function logout() {
             localStorage.clear();
-            window.location.href = 'login_2.html';
+            window.location.href = 'login.html';
         }
 
         function copyReferralCode() {
@@ -251,7 +251,7 @@
                 alert('Kod polecenia nie został jeszcze załadowany.');
                 return;
             }
-            const referralLink = `${window.location.origin}/login_2.html?ref=${code}`;
+            const referralLink = `${window.location.origin}/login.html?ref=${code}`;
             navigator.clipboard.writeText(referralLink);
             alert(`Skopiowano link polecenia do schowka:\n${referralLink}`);
         }
@@ -341,7 +341,7 @@
                 });
                 const result = await response.json();
                 if (result.success) {
-                    window.location.href = 'success_2.html';
+                    window.location.href = 'success.html';
                 } else {
                     alert('Błąd rezerwacji: ' + (result.error || 'Nieznany błąd'));
                 }
