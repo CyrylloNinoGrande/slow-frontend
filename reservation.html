@@ -31,7 +31,7 @@
 
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
-            <!-- Wybór usług / pakietów z pełnym opisem, ceną i czasem trwania -->
+            <!-- Wybór usług / pakietów -->
             <section class="space-y-3">
                 <div class="grid grid-cols-2 gap-2 p-1 bg-[#EFECE6] rounded-2xl border border-[#E2DCD0]">
                     <button onclick="switchTab('services')" id="tab-services" class="py-2.5 px-3 rounded-xl text-xs font-extrabold transition shadow-xs bg-[#1C2833] text-white cursor-pointer">
@@ -157,7 +157,7 @@
                 </div>
             </section>
 
-            <!-- Zgody formalne oraz informacja o prawie odstąpienia od umowy -->
+            <!-- Zgody formalne -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
                 <div class="text-[11px] text-[#55605B] bg-[#FAF8F5] p-3 rounded-xl border border-[#E2DCD0] leading-relaxed">
                     ℹ️ Dokonując rezerwacji usługi wykonywanej w konkretnym terminie, przyjmuję do wiadomości, że zgodnie z regulaminem nie przysługuje mi ustawowe prawo odstąpienia od umowy (art. 38 ust. 1 pkt 12 ustawy o prawach konsumenta).
@@ -171,13 +171,13 @@
                 </label>
             </section>
 
-            <!-- Przycisk płatności / rezerwacji -->
+            <!-- Przycisk płatności -->
             <button onclick="startPayUPayment()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center space-x-2">
                 <span>💳</span>
                 <span>Zatwierdź i przejdź do płatności (PayU)</span>
             </button>
 
-            <!-- Stopka z linkami -->
+            <!-- Stopka -->
             <footer class="pt-4 pb-2 text-center text-[10px] text-[#7C8780] space-y-1 border-t border-[#E2DCD0]">
                 <p>Fundacja SLoW • ul. Młyńska 34a, Kórnik</p>
                 <div class="flex justify-center space-x-3 pt-1">
@@ -348,27 +348,6 @@
             selectedTimeSlot = slot;
         }
 
-        // Funkcja pomocnicza korygująca strefę czasową na froncie dla poprawnego zapisu w kalendarzu
-        function getCorrectedDateTime(dateStr, timeStr) {
-            const d = new Date(`${dateStr}T12:00:00Z`);
-            const warsawHourStr = new Intl.DateTimeFormat('en-US', {
-                timeZone: 'Europe/Warsaw',
-                hour: 'numeric',
-                hour12: false
-            }).format(d);
-            const utcHourStr = d.getUTCHours();
-            let offsetHours = parseInt(warsawHourStr) - utcHourStr;
-            if (offsetHours > 12) offsetHours -= 24;
-            if (offsetHours < -12) offsetHours += 24;
-
-            const [selHour, selMin] = timeStr.split(':').map(Number);
-            let utcHour = selHour - offsetHours;
-            const formattedUtcHour = String(utcHour).padStart(2, '0');
-            const formattedMin = String(selMin).padStart(2, '0');
-
-            return `${dateStr}T${formattedUtcHour}:${formattedMin}:00`;
-        }
-
         async function startPayUPayment() {
             const termsChecked = document.getElementById('terms-checkbox').checked;
             if (!termsChecked) {
@@ -389,13 +368,12 @@
                 return;
             }
 
-            // Używamy korekty strefy czasowej, żeby kalendarz Google zapisał właściwą godzinę
-            const dateTime = getCorrectedDateTime(date, selectedTimeSlot);
+            // Wysyłamy bezpośredni czas lokalny bez sztucznych przesunięć
+            const dateTime = `${date}T${selectedTimeSlot}:00`;
 
             localStorage.setItem('slow_last_service', selectedServiceName);
             localStorage.setItem('slow_last_datetime', dateTime);
 
-            // Standardowa płatność PayU
             try {
                 const response = await fetch(`${API_BASE}/api/payment/create`, {
                     method: 'POST',
