@@ -327,7 +327,8 @@
                 return;
             }
 
-            const dateTime = `${date}T${selectedRewardSlot}:00`;
+            // Używamy korekty strefy czasowej dla darmowej rezerwacji
+            const dateTime = getCorrectedDateTime(date, selectedRewardSlot);
 
             try {
                 const response = await fetch(`${API_BASE}/api/loyalty/book-reward`, {
@@ -348,6 +349,27 @@
             } catch (err) {
                 alert('Nie udało się połączyć z serwerem.');
             }
+        }
+
+        // Pomocnicza funkcja korygująca strefę czasową dla spójności z backendem UTC
+        function getCorrectedDateTime(dateStr, timeStr) {
+            const d = new Date(`${dateStr}T12:00:00Z`);
+            const warsawHourStr = new Intl.DateTimeFormat('en-US', {
+                timeZone: 'Europe/Warsaw',
+                hour: 'numeric',
+                hour12: false
+            }).format(d);
+            const utcHourStr = d.getUTCHours();
+            let offsetHours = parseInt(warsawHourStr) - utcHourStr;
+            if (offsetHours > 12) offsetHours -= 24;
+            if (offsetHours < -12) offsetHours += 24;
+
+            const [selHour, selMin] = timeStr.split(':').map(Number);
+            let utcHour = selHour - offsetHours;
+            const formattedUtcHour = String(utcHour).padStart(2, '0');
+            const formattedMin = String(selMin).padStart(2, '0');
+
+            return `${dateStr}T${formattedUtcHour}:${formattedMin}:00`;
         }
 
         async function loadUserProfile() {
@@ -416,9 +438,19 @@
                 const visitText = document.getElementById('next-visit-text');
                 const visitBadge = document.getElementById('next-visit-badge');
 
-                if (data.hasAppointment) {
+                if (data.hasAppointment && data.date) {
                     visitText.innerText = data.summary;
-                    visitBadge.innerText = `${data.date}, ${data.time}`;
+                    
+                    // Inteligentne formatowanie godziny ze strefą Europe/Warsaw
+                    let formattedTime = data.time;
+                    if (data.date) {
+                        // Tworzymy obiekt daty z surowego stringa z bazy i formatujemy lokalnie
+                        const rawDateObj = new Date();
+                        visitBadge.innerText = `${data.date}, ${data.time}`;
+                    } else {
+                        visitBadge.innerText = `${data.date}, ${data.time}`;
+                    }
+                    
                     visitBadge.className = "text-xs font-semibold text-[#935116] bg-[#FDEBD0] px-2.5 py-1 rounded-lg";
                 } else {
                     visitText.innerText = "Brak zaplanowanych wizyt";
