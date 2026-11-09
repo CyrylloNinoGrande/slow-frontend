@@ -42,9 +42,9 @@
                     
                     <!-- Nawigacja po okresach (ostatnie 7 dni / przesuwanie) -->
                     <div class="flex items-center space-x-1 bg-[#121821] px-2 py-1 rounded-xl border border-[#2E4053]">
-                        <button onclick="shiftChartDays(-7)" class="text-xs text-[#A5B3C2] hover:text-white px-1 cursor-pointer" title="Wcześniej">◀</button>
+                        <button onclick="shiftChartDays(7)" class="text-xs text-[#A5B3C2] hover:text-white px-1 cursor-pointer" title="Wcześniej (starsze dni)">◀</button>
                         <span id="chart-range-label" class="text-[10px] text-[#F5CBA7] font-semibold">Ostatnie 7 dni</span>
-                        <button onclick="shiftChartDays(7)" id="btn-next-period" class="text-xs text-[#A5B3C2] hover:text-white px-1 cursor-pointer" title="Później">▶</button>
+                        <button onclick="shiftChartDays(-7)" id="btn-next-period" class="text-xs text-[#A5B3C2] hover:text-white px-1 cursor-pointer" title="Później (nowsze dni)">▶</button>
                     </div>
                 </div>
                 
@@ -161,7 +161,7 @@
             </section>
 
             <button onclick="saveJournalEntry()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer">
-                Zapisz dzisiejszy wpis w Dzienniku 🌿
+                Zapisz dzisiejszy wpis w Dzienniku SLoW 🌿
             </button>
 
             <!-- Stopka w dzienniku -->
@@ -277,7 +277,14 @@
 
         function shiftChartDays(days) {
             chartOffsetDays += days;
-            if (chartOffsetDays < 0) chartOffsetDays = 0; // Nie idziemy w przyszłość
+            
+            // Zabezpieczenie przed wyjściem poza zakres danych w przeszłość
+            const maxOffset = Math.max(0, allUserHistory.length - 7);
+            if (chartOffsetDays > maxOffset) chartOffsetDays = maxOffset;
+            
+            // Nie idziemy w przyszłość (offset nie może być mniejszy niż 0)
+            if (chartOffsetDays < 0) chartOffsetDays = 0; 
+            
             renderChartWithOffset();
         }
 
@@ -290,7 +297,7 @@
             const startIndex = Math.max(0, endIndex - pageSize);
             const slicedData = allUserHistory.slice(startIndex, endIndex);
 
-            // Etykieta zakresu
+            // Etykieta zakresu dat
             const rangeLabel = document.getElementById('chart-range-label');
             if (slicedData.length > 0) {
                 rangeLabel.innerText = `${slicedData[0].date} – ${slicedData[slicedData.length - 1].date}`;
@@ -298,19 +305,43 @@
                 rangeLabel.innerText = "Brak danych";
             }
 
-            // Przycisk "później" (▶) aktywny tylko jeśli jesteśmy cofnięci w czasie
+            // Przycisk "później" (▶) aktywny tylko jeśli jesteśmy cofnięci w czasie względem dzisiaj
             const btnNext = document.getElementById('btn-next-period');
             if (btnNext) {
                 btnNext.style.opacity = chartOffsetDays > 0 ? "1" : "0.3";
                 btnNext.style.pointerEvents = chartOffsetDays > 0 ? "auto" : "none";
             }
 
-            // Średnia dla wybranego zakresu
+            // Średnia dla wybranego zakresu oraz porównanie z poprzednim tygodniem
             if (slicedData.length > 0) {
                 const sum = slicedData.reduce((acc, item) => acc + ((item.physical + item.mental) / 2), 0);
                 const avg = (sum / slicedData.length).toFixed(1);
                 document.getElementById('avg-mood-display').innerText = `${avg} / 10`;
-                document.getElementById('feedback-desc').innerText = `Wyświetlam ${slicedData.length} wpisów z wybranego okresu (Wszystkich w bazie: ${allUserHistory.length})`;
+
+                // Obliczamy dane dla poprzedniego tygodnia (okno przesunięte o 7 dni wstecz względem aktualnego okna)
+                const prevEndIndex = startIndex;
+                const prevStartIndex = Math.max(0, prevEndIndex - pageSize);
+                const prevSlicedData = allUserHistory.slice(prevStartIndex, prevEndIndex);
+
+                let feedbackText = `Wyświetlam ${slicedData.length} wpisów z wybranego okresu.`;
+
+                if (prevSlicedData.length > 0) {
+                    const prevSum = prevSlicedData.reduce((acc, item) => acc + ((item.physical + item.mental) / 2), 0);
+                    const prevAvg = (prevSum / prevSlicedData.length).toFixed(1);
+                    const diff = (avg - prevAvg).toFixed(1);
+
+                    if (diff > 0) {
+                        feedbackText += ` 📈 Wzrost o +${diff} pkt. w stosunku do poprzedniego tygodnia (śr. ${prevAvg}).`;
+                    } else if (diff < 0) {
+                        feedbackText += ` 📉 Spadek o ${diff} pkt. w stosunku do poprzedniego tygodnia (śr. ${prevAvg}).`;
+                    } else {
+                        feedbackText += ` ➡️ Wynik stabilny w porównaniu do poprzedniego tygodnia (śr. ${prevAvg}).`;
+                    }
+                } else {
+                    feedbackText += ` Brak danych z poprzedniego okresu do porównania.`;
+                }
+
+                document.getElementById('feedback-desc').innerText = feedbackText;
             }
 
             renderChart(slicedData);
