@@ -32,13 +32,13 @@
 
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
-            <!-- Banner aktywnych karnetów użytkownika (widoczny, jeśli klient posiada niewykorzystane sesje) -->
+            <!-- Banner aktywnych karnetów i pakietów użytkownika -->
             <div id="user-passes-banner" class="hidden bg-[#E8F8F5] border border-[#A3E4D7] rounded-2xl p-3.5 space-y-2 shadow-xs">
                 <div class="flex items-center justify-between">
-                    <span class="text-xs font-bold text-[#0E6251]">🌿 Masz aktywne karnety wielosesyjne!</span>
+                    <span class="text-xs font-bold text-[#0E6251]">🌿 Masz aktywne karnety i pakiety!</span>
                     <span class="text-[10px] bg-[#1ABC9C] text-white px-2 py-0.5 rounded-full font-bold">Kredyty</span>
                 </div>
-                <p class="text-[11px] text-[#117A65]">Możesz zarezerwować wizytę z posiadanego karnetu bez ponownej płatności.</p>
+                <p class="text-[11px] text-[#117A65]">Możesz zarezerwować wizytę z posiadanego pakietu bez ponownej płatnosti.</p>
                 <div id="passes-buttons-container" class="space-y-1.5 pt-1"></div>
             </div>
 
@@ -104,14 +104,14 @@
                     </div>
                 </div>
 
-                <!-- Lista pakietów i karnetów -->
+                <!-- Lista pakietów i karnetów wielosesyjnych -->
                 <div id="list-packages" class="space-y-2.5 hidden">
                     <div onclick="selectService('HomeoBalans', 500, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#1C2E24]">HomeoBalans</span>
+                            <span class="text-sm font-bold text-[#1C2E24]">Pakiet HomeoBalans</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">500 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja Homeopatyczna + 2 sesje w kapsule balansującej. Czas trwania: pakiet wielosesyjny.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Pakiet wielosesyjny: 1 konsultacja homeopatyczna + 2 sesje w kapsule balansującej. Kupujesz pulę, terminy rezerwujesz dowolnie później!</p>
                     </div>
 
                     <div onclick="selectService('Pakiet TCM', 300, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -140,7 +140,7 @@
                 </div>
             </section>
 
-            <!-- Wybór daty i godziny (Widoczny dla pojedynczych usług, pakietów jednorazowych oraz rezerwacji z karnetu) -->
+            <!-- Wybór daty i godziny (Ukrywany automatycznie przy zakupie pakietów wielosesyjnych) -->
             <section id="date-time-section" class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
                 <label class="block text-xs font-bold text-[#1C2E24]">Wybierz datę wizyty:</label>
                 <input type="date" id="reservation-date" class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
@@ -151,11 +151,11 @@
                 </div>
             </section>
 
-            <!-- Informacja wyświetlana przy zakupie karnetów wielosesyjnych (gdzie wybór terminu jest pomijany) -->
+            <!-- Informacja przy zakupie pakietów wielosesyjnych -->
             <section id="pass-info-section" class="hidden bg-[#FEF9E7] border border-[#F9E79F] rounded-2xl p-4 shadow-xs space-y-2">
-                <h3 class="text-xs font-bold text-[#B7950B]">🌿 Zakup karnetu wielosesyjnego</h3>
+                <h3 class="text-xs font-bold text-[#B7950B]">🌿 Zakup pakietu / karnetu wielosesyjnego</h3>
                 <p class="text-[11px] text-[#7D6608] leading-relaxed">
-                    Kupujesz karnet zawierający <strong>4 sesje</strong>. Nie musisz wybierać terminów od razu. Po opłaceniu karnet pojawi się na Twoim koncie i będziesz mógł/mogła rezerwować poszczególne wizyty w dowolnym momencie z poziomu profilu lub zakładki rezerwacji.
+                    Nabywasz pakiet wielosesyjny. Nie musisz wybierać terminów od razu. Po opłaceniu pakiety pojawią się na Twoim koncie i będziesz mógł/mogła rezerwować poszczególne wizyty w dowolnym momencie.
                 </p>
             </section>
 
@@ -235,12 +235,10 @@
     </div>
 
     <script>
-        // Konfiguracja adresu API w zależności od środowiska (lokalnie lub produkcja na Renderze)
         const API_BASE = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
             ? 'http://localhost:3000' 
             : 'https://slow-backend.onrender.com';
 
-        // Weryfikacja czy użytkownik jest zalogowany
         if (localStorage.getItem('slow_user_logged') !== 'true') {
             window.location.href = 'login.html';
         }
@@ -250,15 +248,15 @@
         let selectedServiceName = "Bańki Chińskie";
         let selectedBasePrice = 130;
         let activeUserPasses = [];
-        let selectedPassToUse = null; // ID karnetu, jeśli użytkownik rezerwuje sesję z posiadanej puli
+        let selectedPassToUse = null;
 
+        // Pakiety wielosesyjne / pulowe, które nie wymagają wyboru daty przy zakupie
+        const multiSessionPasses = ['homeobalans', 'tcmx4', 'balansx4'];
         const packageNames = ['HomeoBalans', 'TCM', 'TCMx4', 'Balansx4', 'Pakiet TCM', 'Karnet TCMx4', 'Karnet Balansx4'];
 
-        // Inicjalizacja widoku rezerwacji
         async function initReservationView() {
             const userEmail = localStorage.getItem('slow_user_email');
             if (userEmail) {
-                // Pobieranie danych o rabacie z poleceń
                 try {
                     const res = await fetch(`${API_BASE}/api/next-appointment?email=${encodeURIComponent(userEmail)}`);
                     const data = await res.json();
@@ -270,7 +268,6 @@
                     console.error('Błąd pobierania rabatu:', err);
                 }
 
-                // Pobieranie aktywnych karnetów wielosesyjnych użytkownika
                 try {
                     const passesRes = await fetch(`${API_BASE}/api/user-passes?email=${encodeURIComponent(userEmail)}`);
                     const passesData = await passesRes.json();
@@ -301,7 +298,6 @@
             document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
         }
 
-        // Renderowanie banera z dostępnymi karnetami użytkownika
         function renderUserPassesBanner() {
             const banner = document.getElementById('user-passes-banner');
             const container = document.getElementById('passes-buttons-container');
@@ -317,7 +313,7 @@
                         <p class="text-[10px] text-[#117A65]">Pozostało sesji: <strong>${remaining} z ${pass.total_sessions}</strong></p>
                     </div>
                     <button type="button" onclick="usePassForReservation(${pass.id}, '${pass.pass_name}')" class="px-3 py-1.5 bg-[#1ABC9C] hover:bg-[#16A085] text-white text-[11px] font-bold rounded-lg transition cursor-pointer">
-                        Użyj z karnetu
+                        Użyj z pakietu
                     </button>
                 `;
                 container.appendChild(div);
@@ -326,30 +322,27 @@
             banner.classList.remove('hidden');
         }
 
-        // Obsługa wyboru rezerwacji wizyty z posiadanego karnetu
         function usePassForReservation(passId, passName) {
             selectedPassToUse = passId;
             selectedServiceName = passName;
             
             document.querySelectorAll('#passes-buttons-container button').forEach(b => {
-                b.innerText = "Użyj z karnetu";
+                b.innerText = "Użyj z pakietu";
                 b.className = "px-3 py-1.5 bg-[#1ABC9C] hover:bg-[#16A085] text-white text-[11px] font-bold rounded-lg transition cursor-pointer";
             });
             event.target.innerText = "Wybrano ✓";
             event.target.className = "px-3 py-1.5 bg-[#117A65] text-white text-[11px] font-bold rounded-lg cursor-default";
 
-            document.getElementById('selected-service-name').innerText = `${passName} (Sesja z puli karnetu)`;
+            document.getElementById('selected-service-name').innerText = `${passName} (Rezerwacja sesji)`;
             document.getElementById('base-price-display').innerText = "0 zł";
-            document.getElementById('discount-display').innerText = "Karnet opłacony";
+            document.getElementById('discount-display').innerText = "Opłacone z pakietu";
             document.getElementById('final-price-display').innerText = "0 zł";
-            document.getElementById('pay-button-text').innerText = "Zatwierdź rezerwację z karnetu";
+            document.getElementById('pay-button-text').innerText = "Zatwierdź rezerwację z pakietu";
 
-            // Wyświetlenie kalendarza, ponieważ rezerwacja z karnetu wymaga wyboru konkretnego terminu wizyty
             document.getElementById('date-time-section').classList.remove('hidden');
             document.getElementById('pass-info-section').classList.add('hidden');
         }
 
-        // Przełączanie zakładek: Usługi pojedyncze / Pakiety i Karnety
         function switchTab(tab) {
             const tabServices = document.getElementById('tab-services');
             const tabPackages = document.getElementById('tab-packages');
@@ -369,9 +362,8 @@
             }
         }
 
-        // Wybór konkretnej usługi lub pakietu z listy
         function selectService(name, price, element) {
-            selectedPassToUse = null; // Resetowanie wyboru karnetu po kliknięciu nowej pozycji
+            selectedPassToUse = null;
             selectedServiceName = name;
             selectedBasePrice = price;
 
@@ -388,17 +380,15 @@
             document.getElementById('selected-service-name').innerText = name;
             document.getElementById('pay-button-text').innerText = "Zatwierdź i przejdź do płatności (PayU)";
 
-            // Rozróżnienie: Karnety wielosesyjne (TCMx4, Balansx4) NIE wymagają wyboru daty przy zakupie.
-            // Zwykłe usługi, pakiety jednorazowe oraz Pakiet TCM WYMAGAJĄ wyboru terminu od razu.
-            const isMultiSessionPass = name.toLowerCase().includes('tcmx4') || name.toLowerCase().includes('balansx4');
+            const isMultiSession = multiSessionPasses.some(pkg => name.toLowerCase().includes(pkg));
             const dateTimeSection = document.getElementById('date-time-section');
             const passInfoSection = document.getElementById('pass-info-section');
             const withdrawalDisclaimer = document.getElementById('withdrawal-disclaimer');
 
-            if (isMultiSessionPass) {
+            if (isMultiSession) {
                 dateTimeSection.classList.add('hidden');
                 passInfoSection.classList.remove('hidden');
-                withdrawalDisclaimer.innerText = "ℹ️ Kupując karnet wielosesyjny, nabywasz pulę zabiegów do wykorzystania w okresie ważności. Terminy rezerwujesz dowolnie później.";
+                withdrawalDisclaimer.innerText = "ℹ️ Kupując pakiet wielosesyjny, nabywasz pulę zabiegów do wykorzystania. Terminy poszczególnych wizyt rezerwujesz dowolnie później z poziomu swojego konta.";
             } else {
                 dateTimeSection.classList.remove('hidden');
                 passInfoSection.classList.add('hidden');
@@ -408,7 +398,6 @@
             updatePriceDisplay();
         }
 
-        // Aktualizacja wyświetlanych cen i rabatów
         function updatePriceDisplay() {
             if (selectedPassToUse) return;
 
@@ -421,7 +410,6 @@
             document.getElementById('final-price-display').innerText = `${finalPrice} zł`;
         }
 
-        // Ładowanie dostępnych godzin z backendu / kalendarza Google
         async function loadAvailableSlots() {
             const date = document.getElementById('reservation-date').value;
             const container = document.getElementById('slots-container');
@@ -450,7 +438,6 @@
             }
         }
 
-        // Zaznaczenie konkretnej godziny
         function selectSlot(slot, btn) {
             document.querySelectorAll('#slots-container button').forEach(b => {
                 b.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
@@ -461,7 +448,6 @@
             selectedTimeSlot = slot;
         }
 
-        // Główna funkcja obsługująca zatwierdzenie i przejście do płatności PayU lub rezerwacji z karnetu
         async function startPayUPayment() {
             const termsChecked = document.getElementById('terms-checkbox').checked;
             if (!termsChecked) {
@@ -470,9 +456,8 @@
             }
 
             const userEmail = localStorage.getItem('slow_user_email');
-            const isMultiSessionPass = selectedServiceName.toLowerCase().includes('tcmx4') || selectedServiceName.toLowerCase().includes('balansx4');
+            const isMultiSession = multiSessionPasses.some(pkg => selectedServiceName.toLowerCase().includes(pkg));
 
-            // SCENARIUSZ A: Rezerwacja wizyty przy użyciu posiadanego wcześniej karnetu (0 PLN)
             if (selectedPassToUse) {
                 if (!selectedTimeSlot) {
                     alert('Wybierz godzinę wizyty.');
@@ -494,20 +479,19 @@
                     });
                     const result = await response.json();
                     if (result.success) {
-                        alert('Zarezerwowano wizytę z karnetu pomyślnie! Sesja zostanie rozliczona po odbyciu zabiegu. 🌿');
+                        alert('Zarezerwowano wizytę z pakietu pomyślnie! Sesja zostanie rozliczona po odbyciu zabiegu. 🌿');
                         window.location.href = 'index.html';
                     } else {
                         alert('Błąd: ' + (result.error || 'Nieznany błąd'));
                     }
                 } catch (err) {
-                    console.error('Błąd rezerwacji z karnetu:', err);
+                    console.error('Błąd rezerwacji z pakietu:', err);
                     alert('Nie udało się połączyć z serwerem.');
                 }
                 return;
             }
 
-            // SCENARIUSZ B: Zakup nowego karnetu wielosesyjnego (np. TCMx4) – bez wyboru daty
-            if (isMultiSessionPass) {
+            if (isMultiSession) {
                 const finalPrice = selectedBasePrice;
 
                 try {
@@ -534,7 +518,6 @@
                 return;
             }
 
-            // SCENARIUSZ C: Standardowa usługa pojedyncza lub pakiet jednorazowy (np. Pakiet TCM) z wybranym terminem i PayU
             const effectiveDiscount = userDiscountPercent;
             const finalPrice = Math.round(selectedBasePrice * (1 - effectiveDiscount / 100));
             const date = document.getElementById('reservation-date').value;
@@ -573,7 +556,6 @@
             }
         }
 
-        // Uruchomienie inicjalizacji widoku po załadowaniu strony
         initReservationView();
     </script>
 </body>
