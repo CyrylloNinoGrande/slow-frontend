@@ -122,17 +122,17 @@
                         <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Jednorazowa sesja składająca się z 3 zabiegów (bańki, moksa, konchowanie) w ciągu 90 min. Wybierz termin od razu!</p>
                     </div>
 
-                    <div onclick="selectService('Karnet TCMx4', 450, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
+                    <div onclick="selectService('Karnet TCM x4', 450, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#1C2E24]">Karnet TCMx4</span>
+                            <span class="text-sm font-bold text-[#1C2E24]">Karnet TCM x4</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">450 zł netto</span>
                         </div>
                         <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet 4 zabiegów: Bańki Chińskie (4x 60 min). Kupujesz pulę, terminy rezerwujesz dowolnie później!</p>
                     </div>
 
-                    <div onclick="selectService('Karnet Balansx4', 480, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
+                    <div onclick="selectService('Karnet Balans x4', 480, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#1C2E24]">Karnet Balansx4</span>
+                            <span class="text-sm font-bold text-[#1C2E24]">Karnet Balans x4</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">480 zł netto</span>
                         </div>
                         <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet 4 sesji w kapsule balansującej (4x 60 min). Kupujesz pulę, terminy rezerwujesz dowolnie później!</p>
@@ -168,7 +168,8 @@
                     <span class="text-[#D5D8DC]">Cena bazowa:</span>
                     <span id="base-price-display" class="font-semibold">130 zł</span>
                 </div>
-                <div class="flex justify-between items-center text-xs">
+                <!-- Wiersz rabatu z poleceń - ukrywany automatycznie dla pakietów i karnetów -->
+                <div id="discount-row" class="flex justify-between items-center text-xs">
                     <span class="text-[#D5D8DC]">Twój rabat z poleceń:</span>
                     <span id="discount-display" class="font-bold text-[#F5CBA7]">0%</span>
                 </div>
@@ -251,8 +252,8 @@
         let selectedPassToUse = null;
 
         // Pakiety wielosesyjne / pulowe, które nie wymagają wyboru daty przy zakupie
-        const multiSessionPasses = ['homeobalans', 'tcmx4', 'balansx4'];
-        const packageNames = ['HomeoBalans', 'TCM', 'TCMx4', 'Balansx4', 'Pakiet TCM', 'Karnet TCMx4', 'Karnet Balansx4'];
+        const multiSessionPasses = ['homeobalans', 'tcm x4', 'balans x4'];
+        const packageNames = ['HomeoBalans', 'TCM', 'TCM x4', 'Balans x4', 'Pakiet TCM', 'Karnet TCM x4', 'Karnet Balans x4'];
 
         async function initReservationView() {
             const userEmail = localStorage.getItem('slow_user_email');
@@ -335,7 +336,10 @@
 
             document.getElementById('selected-service-name').innerText = `${passName} (Rezerwacja sesji)`;
             document.getElementById('base-price-display').innerText = "0 zł";
-            document.getElementById('discount-display').innerText = "Opłacone z pakietu";
+            
+            // Ukrywamy wiersz rabatu przy rezerwacji z karnetu
+            document.getElementById('discount-row').classList.add('hidden');
+            
             document.getElementById('final-price-display').innerText = "0 zł";
             document.getElementById('pay-button-text').innerText = "Zatwierdź rezerwację z pakietu";
 
@@ -402,12 +406,22 @@
             if (selectedPassToUse) return;
 
             const isPackage = packageNames.some(pkg => selectedServiceName.toLowerCase().includes(pkg.toLowerCase()));
-            const effectiveDiscount = isPackage ? 0 : userDiscountPercent;
-            const finalPrice = Math.round(selectedBasePrice * (1 - effectiveDiscount / 100));
+            const discountRow = document.getElementById('discount-row');
 
-            document.getElementById('base-price-display').innerText = `${selectedBasePrice} zł`;
-            document.getElementById('discount-display').innerText = isPackage ? '0% (Pakiet/Karnet)' : `${userDiscountPercent}%`;
-            document.getElementById('final-price-display').innerText = `${finalPrice} zł`;
+            if (isPackage) {
+                // Całkowite ukrycie linii rabatu dla pakietów i karnetów
+                discountRow.classList.add('hidden');
+                document.getElementById('base-price-display').innerText = `${selectedBasePrice} zł`;
+                document.getElementById('final-price-display').innerText = `${selectedBasePrice} zł`;
+            } else {
+                // Wyświetlanie linii rabatu dla usług pojedynczych
+                discountRow.classList.remove('hidden');
+                const finalPrice = Math.round(selectedBasePrice * (1 - userDiscountPercent / 100));
+
+                document.getElementById('base-price-display').innerText = `${selectedBasePrice} zł`;
+                document.getElementById('discount-display').innerText = `${userDiscountPercent}%`;
+                document.getElementById('final-price-display').innerText = `${finalPrice} zł`;
+            }
         }
 
         async function loadAvailableSlots() {
