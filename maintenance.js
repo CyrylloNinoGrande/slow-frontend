@@ -4,7 +4,7 @@
 
 (function() {
     // 🎛️ MASTER SWITCH: Zmień na true na czas wdrożenia i testów, a potem z powrotem na false!
-    const MAINTENANCE_MODE = true; 
+    const MAINTENANCE_MODE = false; 
     const BYPASS_SECRET_KEY = 'slow2026-sec';
 
     // 1. Sprawdzenie parametru bypass w URL i zapamiętanie w localStorage
