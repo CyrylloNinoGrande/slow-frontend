@@ -12,11 +12,13 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
+    <script src="loader.js"></script>
 </head>
 <body class="bg-[#121212] text-[#2C3531] flex justify-center items-center min-h-screen m-0">
 
     <div class="w-full max-w-md bg-[#FAF8F5] h-screen flex flex-col justify-between shadow-2xl relative">
 
+        <!-- Nagłówek aplikacji -->
         <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222] shrink-0">
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
@@ -26,11 +28,22 @@
 
         <div class="px-6 pt-3 pb-1 shrink-0">
             <h1 class="text-xl font-bold text-[#1C2E24]">Legalny Wypoczynek 🌿</h1>
-            <p class="text-xs text-[#7C8780]">Wybierz zabieg lub pakiet, termin i opłać wizytę z rabatem.</p>
+            <p class="text-xs text-[#7C8780]">Wybierz zabieg, pakiet lub karnet i zaplanuj wizytę.</p>
         </div>
 
         <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
+            <!-- Banner aktywnych karnetów i pakietów użytkownika -->
+            <div id="user-passes-banner" class="hidden bg-[#E8F8F5] border border-[#A3E4D7] rounded-2xl p-3.5 space-y-2 shadow-xs">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-[#0E6251]">🌿 Masz aktywne karnety i pakiety!</span>
+                    <span class="text-[10px] bg-[#1ABC9C] text-white px-2 py-0.5 rounded-full font-bold">Kredyty</span>
+                </div>
+                <p class="text-[11px] text-[#117A65]">Możesz zarezerwować wizytę z posiadanego pakietu bez ponownej płatności.</p>
+                <div id="passes-buttons-container" class="space-y-1.5 pt-1"></div>
+            </div>
+
+            <!-- Wybór usług / pakietów -->
             <section class="space-y-3">
                 <div class="grid grid-cols-2 gap-2 p-1 bg-[#EFECE6] rounded-2xl border border-[#E2DCD0]">
                     <button onclick="switchTab('services')" id="tab-services" class="py-2.5 px-3 rounded-xl text-xs font-extrabold transition shadow-xs bg-[#1C2833] text-white cursor-pointer">
@@ -41,21 +54,14 @@
                     </button>
                 </div>
 
+                <!-- Lista usług pojedynczych -->
                 <div id="list-services" class="space-y-2.5">
-                    <div id="test-payment-card" onclick="selectService('Testowa Płatność PayU', 1, this)" class="service-card bg-[#FFF3E0] border-2 border-dashed border-[#D35400] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
-                        <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#D35400]">🧪 Testowa Płatność PayU</span>
-                            <span class="text-xs font-extrabold text-white bg-[#D35400] px-2 py-0.5 rounded-lg">1 zł netto</span>
-                        </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Pozycja diagnostyczna do testowania bramki płatności.</p>
-                    </div>
-
                     <div onclick="selectService('Bańki Chińskie', 130, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
                             <span class="text-sm font-bold text-[#1C2E24]">Bańki Chińskie</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">130 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-wspierający z wykorzystaniem baniek.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-wspierający z wykorzystaniem baniek. Czas trwania: 60 min.</p>
                     </div>
 
                     <div onclick="selectService('Konchowanie uszu', 130, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -63,7 +69,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Konchowanie uszu</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">130 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjny i dogrzewający - konchowanie uszu + masaż twarzy.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjny i dogrzewający - konchowanie uszu + masaż twarzy. Czas trwania: 60 min.</p>
                     </div>
 
                     <div onclick="selectService('Moksoterapia', 100, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -71,7 +77,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Moksoterapia</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">100 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-energetyczny przywracający równowagę.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Zabieg relaksacyjno-energetyczny przywracający równowagę. Czas trwania: 45 min.</p>
                     </div>
 
                     <div onclick="selectService('Homeopatia', 300, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -79,7 +85,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Konsultacja Homeopatyczna</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">300 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja w zakresie naturalnego wspierania organizmu.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja w zakresie naturalnego wspierania organizmu. Czas trwania: 90 min.</p>
                     </div>
 
                     <div onclick="selectService('Kapsuła balansująca', 150, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -87,7 +93,7 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Kapsuła balansująca</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">150 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Głęboka sesja relaksacyjna i wyciszająca.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Głęboka sesja relaksacyjna i wyciszająca. Czas trwania: 60 min.</p>
                     </div>
 
                     <div onclick="selectService('Access Bars', 200, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
@@ -95,46 +101,48 @@
                             <span class="text-sm font-bold text-[#1C2E24]">Access Bars</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">200 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Lekki dotyk 32 punktów na głowie wspierający wyciszenie i redukcję napięcia.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Lekki dotyk 32 punktów na głowie wspierający wyciszenie i redukcję napięcia. Czas trwania: 60 min.</p>
                     </div>
                 </div>
 
+                <!-- Lista pakietów i karnetów wielosesyjnych -->
                 <div id="list-packages" class="space-y-2.5 hidden">
                     <div onclick="selectService('HomeoBalans', 500, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#1C2E24]">HomeoBalans</span>
+                            <span class="text-sm font-bold text-[#1C2E24]">Pakiet HomeoBalans</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">500 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Konsultacja Homeopatyczna + 2 sesje w kapsule balansującej.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Pakiet wielosesyjny: 1 konsultacja homeopatyczna + 2 sesje w kapsule balansującej. Kupujesz pulę, terminy rezerwujesz dowolnie później!</p>
                     </div>
 
-                    <div onclick="selectService('TCM', 300, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
+                    <div onclick="selectService('Pakiet TCM', 300, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
                             <span class="text-sm font-bold text-[#1C2E24]">Pakiet TCM</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">300 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Sesja wspierająca z wykorzystaniem baniek, moksy i konchowania.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Jednorazowa sesja składająca się z 3 zabiegów (bańki, moksa, konchowanie) w ciągu 90 min. Wybierz termin od razu!</p>
                     </div>
 
-                    <div onclick="selectService('TCMx4', 450, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
+                    <div onclick="selectService('Karnet TCM x4', 450, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#1C2E24]">Karnet TCMx4</span>
+                            <span class="text-sm font-bold text-[#1C2E24]">Karnet TCM x4</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">450 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet obejmujący 4 zabiegi: Bańki Chińskie.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet 4 zabiegów: Bańki Chińskie (4x 60 min). Kupujesz pulę, terminy rezerwujesz dowolnie później!</p>
                     </div>
 
-                    <div onclick="selectService('Balansx4', 480, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
+                    <div onclick="selectService('Karnet Balans x4', 480, this)" class="service-card bg-[#F0ECE1] border border-[#E2DCD0] rounded-2xl p-4 shadow-xs cursor-pointer transition hover:border-[#E59866]">
                         <div class="flex justify-between items-start">
-                            <span class="text-sm font-bold text-[#1C2E24]">Karnet Balansx4</span>
+                            <span class="text-sm font-bold text-[#1C2E24]">Karnet Balans x4</span>
                             <span class="text-xs font-extrabold text-[#D35400] bg-white/80 px-2 py-0.5 rounded-lg">480 zł netto</span>
                         </div>
-                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet obejmujący 4 sesje w kapsule balansującej.</p>
+                        <p class="text-[11px] text-[#55605B] mt-1.5 leading-relaxed">Karnet 4 sesji w kapsule balansującej (4x 60 min). Kupujesz pulę, terminy rezerwujesz dowolnie później!</p>
                     </div>
                 </div>
             </section>
 
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
+            <!-- Wybór daty i godziny (Ukrywany automatycznie przy zakupie pakietów wielosesyjnych) -->
+            <section id="date-time-section" class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
                 <label class="block text-xs font-bold text-[#1C2E24]">Wybierz datę wizyty:</label>
                 <input type="date" id="reservation-date" class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
 
@@ -144,31 +152,69 @@
                 </div>
             </section>
 
+            <!-- Informacja przy zakupie pakietów wielosesyjnych -->
+            <section id="pass-info-section" class="hidden bg-[#FEF9E7] border border-[#F9E79F] rounded-2xl p-4 shadow-xs space-y-2">
+                <h3 class="text-xs font-bold text-[#B7950B]">🌿 Zakup pakietu / karnetu wielosesyjnego</h3>
+                <p class="text-[11px] text-[#7D6608] leading-relaxed">
+                    Nabywasz pakiet wielosesyjny. Nie musisz wybierać terminów od razu. Po opłaceniu pakiety pojawią się na Twoim koncie i będziesz mógł/mogła rezerwować poszczególne wizyty w dowolnym momencie.
+                </p>
+            </section>
+
+            <!-- Podsumowanie koszyka -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md space-y-2">
                 <div class="text-[11px] text-[#A5B3C2] pb-1 border-b border-[#2E4053]">
-                    Wybrano: <strong id="selected-service-name" class="text-white">Testowa Płatność PayU</strong>
+                    Wybrana usługa / koszyk: <strong id="selected-service-name" class="text-white">Bańki Chińskie</strong>
                 </div>
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-[#D5D8DC]">Cena bazowa:</span>
-                    <span id="base-price-display" class="font-semibold">1 zł</span>
+                    <span id="base-price-display" class="font-semibold">130 zł</span>
                 </div>
-                <div class="flex justify-between items-center text-xs">
+                <!-- Wiersz rabatu z poleceń - ukrywany automatycznie dla pakietów i karnetów -->
+                <div id="discount-row" class="flex justify-between items-center text-xs">
                     <span class="text-[#D5D8DC]">Twój rabat z poleceń:</span>
                     <span id="discount-display" class="font-bold text-[#F5CBA7]">0%</span>
                 </div>
                 <div class="border-t border-[#2E4053] pt-2 flex justify-between items-center text-sm font-bold">
-                    <span>Do zapłaty (PayU):</span>
-                    <span id="final-price-display" class="text-base text-[#E59866]">1 zł</span>
+                    <span>Do zapłaty:</span>
+                    <span id="final-price-display" class="text-base text-[#E59866]">130 zł</span>
                 </div>
             </section>
 
+            <!-- Zgody formalne -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
+                <div id="withdrawal-disclaimer" class="text-[11px] text-[#55605B] bg-[#FAF8F5] p-3 rounded-xl border border-[#E2DCD0] leading-relaxed">
+                    ℹ️ Dokonując rezerwacji usługi wykonywanej w konkretnym terminie, przyjmuję do wiadomości, że zgodnie z regulaminem nie przysługuje mi ustawowe prawo odstąpienia od umowy (art. 38 ust. 1 pkt 12 ustawy o prawach konsumenta).
+                </div>
+
+                <label class="flex items-start space-x-2.5 cursor-pointer pt-1">
+                    <input type="checkbox" id="terms-checkbox" class="mt-0.5 accent-[#1C2833] w-4 h-4 cursor-pointer">
+                    <span class="text-[11px] text-[#55605B] leading-relaxed">
+                        Zapoznałem/am się i akceptuję postanowienia <a href="regulamin.html" target="_blank" class="text-[#3A539B] underline font-bold">Regulaminu Serwisu</a> oraz <a href="regulamin.html" target="_blank" class="text-[#3A539B] underline font-bold">Polityki Prywatności (RODO)</a>.
+                    </span>
+                </label>
+            </section>
+
+            <!-- Przycisk płatności / akcji -->
             <button onclick="startPayUPayment()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer flex items-center justify-center space-x-2">
                 <span>💳</span>
-                <span>Przejdź do bezpiecznej płatności PayU</span>
+                <span id="pay-button-text">Zatwierdź i przejdź do płatności (PayU)</span>
             </button>
+
+            <!-- Stopka -->
+            <footer class="pt-4 pb-2 text-center text-[10px] text-[#7C8780] space-y-1 border-t border-[#E2DCD0]">
+                <p>Fundacja SLoW • ul. Młyńska 34a, Kórnik</p>
+                <div class="flex justify-center space-x-3 pt-1">
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <span>•</span>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                    <span>•</span>
+                    <a href="profile.html" class="hover:underline text-[#3A539B] font-medium">Kontakt</a>
+                </div>
+            </footer>
 
         </main>
 
+        <!-- Dolny pasek nawigacyjny -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
             <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
@@ -199,60 +245,108 @@
             window.location.href = 'login.html';
         }
 
-        const ENABLE_TEST_PAYMENT = true; 
-
         let selectedTimeSlot = null;
         let userDiscountPercent = 0;
-        let selectedServiceName = ENABLE_TEST_PAYMENT ? "Testowa Płatność PayU" : "Bańki Chińskie";
-        let selectedBasePrice = ENABLE_TEST_PAYMENT ? 1 : 130;
+        let selectedServiceName = "Bańki Chińskie";
+        let selectedBasePrice = 130;
+        let activeUserPasses = [];
+        let selectedPassToUse = null;
 
-        const packageNames = ['HomeoBalans', 'TCM', 'TCMx4', 'Balansx4', 'Pakiet TCM', 'Karnet TCMx4', 'Karnet Balansx4'];
+        // Pakiety wielosesyjne / pulowe, które nie wymagają wyboru daty przy zakupie
+        const multiSessionPasses = ['homeobalans', 'tcm x4', 'balans x4'];
+        const packageNames = ['HomeoBalans', 'TCM', 'TCM x4', 'Balans x4', 'Pakiet TCM', 'Karnet TCM x4', 'Karnet Balans x4'];
 
         async function initReservationView() {
-    const testCard = document.getElementById('test-payment-card');
-    if (testCard && !ENABLE_TEST_PAYMENT) {
-        testCard.style.display = 'none';
-    }
+            const userEmail = localStorage.getItem('slow_user_email');
+            if (userEmail) {
+                try {
+                    const res = await fetch(`${API_BASE}/api/next-appointment?email=${encodeURIComponent(userEmail)}`);
+                    const data = await res.json();
+                    if (data.discount) {
+                        userDiscountPercent = parseInt(data.discount.replace('%', '')) || 0;
+                        document.getElementById('discount-display').innerText = data.discount;
+                    }
+                } catch (err) {
+                    console.error('Błąd pobierania rabatu:', err);
+                }
 
-    // Pobieramy aktualny rabat bezpośrednio z bazy danych przez backend
-    const userEmail = localStorage.getItem('slow_user_email');
-    if (userEmail) {
-        try {
-            const res = await fetch(`${API_BASE}/api/next-appointment?email=${encodeURIComponent(userEmail)}`);
-            const data = await res.json();
-            if (data.discount) {
-                userDiscountPercent = parseInt(data.discount.replace('%', '')) || 0;
-                document.getElementById('discount-display').innerText = data.discount;
+                try {
+                    const passesRes = await fetch(`${API_BASE}/api/user-passes?email=${encodeURIComponent(userEmail)}`);
+                    const passesData = await passesRes.json();
+                    if (passesData.success && passesData.passes && passesData.passes.length > 0) {
+                        activeUserPasses = passesData.passes;
+                        renderUserPassesBanner();
+                    }
+                } catch (passErr) {
+                    console.error('Błąd pobierania karnetów:', passErr);
+                }
             }
-        } catch (err) {
-            console.error('Błąd pobierania danych o rabacie z bazy:', err);
-            // Awaryjny fallback do 0%
-            userDiscountPercent = 0;
-            document.getElementById('discount-display').innerText = '0%';
+            
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            document.getElementById('reservation-date').valueAsDate = tomorrow;
+            
+            const defaultCard = document.querySelector('.service-card');
+            if (defaultCard) {
+                defaultCard.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
+                defaultCard.classList.remove('bg-[#F0ECE1]');
+            }
+
+            document.getElementById('selected-service-name').innerText = selectedServiceName;
+
+            loadAvailableSlots();
+            updatePriceDisplay();
+
+            document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
         }
-    }
-    
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    document.getElementById('reservation-date').valueAsDate = tomorrow;
-    
-    const defaultCard = ENABLE_TEST_PAYMENT ? testCard : document.querySelector('.service-card:not(#test-payment-card)');
-    if (defaultCard) {
-        defaultCard.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
-        if (ENABLE_TEST_PAYMENT) {
-            defaultCard.classList.remove('bg-[#FFF3E0]');
-        } else {
-            defaultCard.classList.remove('bg-[#F0ECE1]');
+
+        function renderUserPassesBanner() {
+            const banner = document.getElementById('user-passes-banner');
+            const container = document.getElementById('passes-buttons-container');
+            container.innerHTML = '';
+
+            activeUserPasses.forEach(pass => {
+                const remaining = pass.total_sessions - pass.used_sessions;
+                const div = document.createElement('div');
+                div.className = "flex items-center justify-between bg-white p-2.5 rounded-xl border border-[#A3E4D7]";
+                div.innerHTML = `
+                    <div>
+                        <p class="text-xs font-bold text-[#0E6251]">${pass.pass_name}</p>
+                        <p class="text-[10px] text-[#117A65]">Pozostało sesji: <strong>${remaining} z ${pass.total_sessions}</strong></p>
+                    </div>
+                    <button type="button" onclick="usePassForReservation(${pass.id}, '${pass.pass_name}')" class="px-3 py-1.5 bg-[#1ABC9C] hover:bg-[#16A085] text-white text-[11px] font-bold rounded-lg transition cursor-pointer">
+                        Użyj z pakietu
+                    </button>
+                `;
+                container.appendChild(div);
+            });
+
+            banner.classList.remove('hidden');
         }
-    }
 
-    document.getElementById('selected-service-name').innerText = selectedServiceName;
+        function usePassForReservation(passId, passName) {
+            selectedPassToUse = passId;
+            selectedServiceName = passName;
+            
+            document.querySelectorAll('#passes-buttons-container button').forEach(b => {
+                b.innerText = "Użyj z pakietu";
+                b.className = "px-3 py-1.5 bg-[#1ABC9C] hover:bg-[#16A085] text-white text-[11px] font-bold rounded-lg transition cursor-pointer";
+            });
+            event.target.innerText = "Wybrano ✓";
+            event.target.className = "px-3 py-1.5 bg-[#117A65] text-white text-[11px] font-bold rounded-lg cursor-default";
 
-    loadAvailableSlots();
-    updatePriceDisplay();
+            document.getElementById('selected-service-name').innerText = `${passName} (Rezerwacja sesji)`;
+            document.getElementById('base-price-display').innerText = "0 zł";
+            
+            // Ukrywamy wiersz rabatu przy rezerwacji z karnetu
+            document.getElementById('discount-row').classList.add('hidden');
+            
+            document.getElementById('final-price-display').innerText = "0 zł";
+            document.getElementById('pay-button-text').innerText = "Zatwierdź rezerwację z pakietu";
 
-    document.getElementById('reservation-date').addEventListener('change', loadAvailableSlots);
-}
+            document.getElementById('date-time-section').classList.remove('hidden');
+            document.getElementById('pass-info-section').classList.add('hidden');
+        }
 
         function switchTab(tab) {
             const tabServices = document.getElementById('tab-services');
@@ -274,33 +368,61 @@
         }
 
         function selectService(name, price, element) {
+            selectedPassToUse = null;
             selectedServiceName = name;
             selectedBasePrice = price;
 
             document.querySelectorAll('.service-card').forEach(card => {
                 card.classList.remove('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
-                if (card.id === 'test-payment-card') {
-                    card.classList.add('bg-[#FFF3E0]');
-                } else {
-                    card.classList.add('bg-[#F0ECE1]');
-                }
+                card.classList.add('bg-[#F0ECE1]');
             });
 
-            element.classList.remove('bg-[#F0ECE1]', 'bg-[#FFF3E0]');
-            element.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
+            if (element) {
+                element.classList.remove('bg-[#F0ECE1]');
+                element.classList.add('border-[#E59866]', 'bg-white', 'ring-2', 'ring-[#E59866]/40', 'shadow-sm');
+            }
 
             document.getElementById('selected-service-name').innerText = name;
+            document.getElementById('pay-button-text').innerText = "Zatwierdź i przejdź do płatności (PayU)";
+
+            const isMultiSession = multiSessionPasses.some(pkg => name.toLowerCase().includes(pkg));
+            const dateTimeSection = document.getElementById('date-time-section');
+            const passInfoSection = document.getElementById('pass-info-section');
+            const withdrawalDisclaimer = document.getElementById('withdrawal-disclaimer');
+
+            if (isMultiSession) {
+                dateTimeSection.classList.add('hidden');
+                passInfoSection.classList.remove('hidden');
+                withdrawalDisclaimer.innerText = "ℹ️ Kupując pakiet wielosesyjny, nabywasz pulę zabiegów do wykorzystania. Terminy poszczególnych wizyt rezerwujesz dowolnie później z poziomu swojego konta.";
+            } else {
+                dateTimeSection.classList.remove('hidden');
+                passInfoSection.classList.add('hidden');
+                withdrawalDisclaimer.innerText = "ℹ️ Dokonując rezerwacji usługi wykonywanej w konkretnym terminie, przyjmuję do wiadomości, że zgodnie z regulaminem nie przysługuje mi ustawowe prawo odstąpienia od umowy (art. 38 ust. 1 pkt 12 ustawy o prawach konsumenta).";
+            }
+
             updatePriceDisplay();
         }
 
         function updatePriceDisplay() {
-            const isPackage = packageNames.some(pkg => selectedServiceName.toLowerCase().includes(pkg.toLowerCase()));
-            const effectiveDiscount = isPackage ? 0 : userDiscountPercent;
-            const finalPrice = Math.round(selectedBasePrice * (1 - effectiveDiscount / 100));
+            if (selectedPassToUse) return;
 
-            document.getElementById('base-price-display').innerText = `${selectedBasePrice} zł`;
-            document.getElementById('discount-display').innerText = isPackage ? '0% (Pakiet/Karnet)' : `${userDiscountPercent}%`;
-            document.getElementById('final-price-display').innerText = `${finalPrice} zł`;
+            const isPackage = packageNames.some(pkg => selectedServiceName.toLowerCase().includes(pkg.toLowerCase()));
+            const discountRow = document.getElementById('discount-row');
+
+            if (isPackage) {
+                // Całkowite ukrycie linii rabatu dla pakietów i karnetów
+                discountRow.classList.add('hidden');
+                document.getElementById('base-price-display').innerText = `${selectedBasePrice} zł`;
+                document.getElementById('final-price-display').innerText = `${selectedBasePrice} zł`;
+            } else {
+                // Wyświetlanie linii rabatu dla usług pojedynczych
+                discountRow.classList.remove('hidden');
+                const finalPrice = Math.round(selectedBasePrice * (1 - userDiscountPercent / 100));
+
+                document.getElementById('base-price-display').innerText = `${selectedBasePrice} zł`;
+                document.getElementById('discount-display').innerText = `${userDiscountPercent}%`;
+                document.getElementById('final-price-display').innerText = `${finalPrice} zł`;
+            }
         }
 
         async function loadAvailableSlots() {
@@ -342,12 +464,77 @@
         }
 
         async function startPayUPayment() {
+            const termsChecked = document.getElementById('terms-checkbox').checked;
+            if (!termsChecked) {
+                alert('Musisz zaakceptować Regulamin Serwisu oraz Politykę Prywatności, aby przejść dalej.');
+                return;
+            }
+
             const userEmail = localStorage.getItem('slow_user_email');
-            
-            const isPackage = packageNames.some(pkg => selectedServiceName.toLowerCase().includes(pkg.toLowerCase()));
-            const effectiveDiscount = isPackage ? 0 : userDiscountPercent;
+            const isMultiSession = multiSessionPasses.some(pkg => selectedServiceName.toLowerCase().includes(pkg));
+
+            if (selectedPassToUse) {
+                if (!selectedTimeSlot) {
+                    alert('Wybierz godzinę wizyty.');
+                    return;
+                }
+                const date = document.getElementById('reservation-date').value;
+                const dateTime = `${date}T${selectedTimeSlot}:00`;
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/reservation/use-pass`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: userEmail,
+                            passId: selectedPassToUse,
+                            serviceName: selectedServiceName,
+                            dateTime: dateTime
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.success) {
+                        alert('Zarezerwowano wizytę z pakietu pomyślnie! Sesja zostanie rozliczona po odbyciu zabiegu. 🌿');
+                        window.location.href = 'index.html';
+                    } else {
+                        alert('Błąd: ' + (result.error || 'Nieznany błąd'));
+                    }
+                } catch (err) {
+                    console.error('Błąd rezerwacji z pakietu:', err);
+                    alert('Nie udało się połączyć z serwerem.');
+                }
+                return;
+            }
+
+            if (isMultiSession) {
+                const finalPrice = selectedBasePrice;
+
+                try {
+                    const response = await fetch(`${API_BASE}/api/payment/create`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: userEmail,
+                            serviceName: selectedServiceName,
+                            amountPLN: finalPrice,
+                            dateTime: null
+                        })
+                    });
+                    const result = await response.json();
+                    if (result.success && result.redirectUri) {
+                        window.location.href = result.redirectUri;
+                    } else {
+                        alert('Błąd inicjacji płatności: ' + (result.error || 'Nieznany błąd'));
+                    }
+                } catch (err) {
+                    console.error('Błąd sieci:', err);
+                    alert('Nie udało się połączyć z bramką płatności.');
+                }
+                return;
+            }
+
+            const effectiveDiscount = userDiscountPercent;
             const finalPrice = Math.round(selectedBasePrice * (1 - effectiveDiscount / 100));
-            
             const date = document.getElementById('reservation-date').value;
 
             if (!selectedTimeSlot) {
@@ -356,7 +543,6 @@
             }
 
             const dateTime = `${date}T${selectedTimeSlot}:00`;
-
             localStorage.setItem('slow_last_service', selectedServiceName);
             localStorage.setItem('slow_last_datetime', dateTime);
 

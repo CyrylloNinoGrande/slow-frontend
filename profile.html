@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pl">
 <head>
@@ -6,18 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1C2833">
-    <title>Twój Profil - Strefa SLoW</title>
+    <title>Profil i Ustawienia - Strefa SLoW</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
+    <script src="loader.js"></script>
 </head>
 <body class="bg-[#121212] text-[#2C3531] flex justify-center items-center min-h-screen m-0">
 
     <div class="w-full max-w-md bg-[#FAF8F5] h-screen flex flex-col justify-between shadow-2xl relative">
 
+        <!-- Nagłówek -->
         <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222] shrink-0">
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
@@ -28,6 +29,7 @@
             </div>
         </header>
 
+        <!-- Tytuł -->
         <div class="px-6 pt-3 pb-1 flex justify-between items-center shrink-0">
             <div>
                 <h1 class="text-lg font-bold text-[#1C2E24]">Twój Profil i Konto ✨</h1>
@@ -36,8 +38,10 @@
             <button onclick="logout()" class="text-[11px] font-semibold text-white bg-[#C0392B] hover:bg-[#A93226] px-3 py-1.5 rounded-xl transition cursor-pointer shadow-xs">Wyloguj</button>
         </div>
 
-        <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
+        <!-- Główna zawartość (przewijalna) -->
+        <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2 text-xs">
 
+            <!-- Kafel Użytkownika i Edycja -->
             <section class="bg-white border-2 border-[#E59866]/30 rounded-2xl p-4 shadow-sm relative overflow-hidden">
                 <div class="absolute top-0 right-0 w-24 h-24 bg-[#E59866]/10 rounded-full blur-xl pointer-events-none"></div>
                 <div class="flex items-center space-x-3 mb-3 pb-3 border-b border-[#F0ECE1]">
@@ -65,18 +69,42 @@
                 </div>
             </section>
 
+            <!-- Oficjalne Dane Rejestrowe Fundacji SLoW (Wymóg PayU i Prawny) -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-sm space-y-2">
-                <div class="flex items-center space-x-2">
-                    <span class="text-sm">📍</span>
-                    <h3 class="text-xs font-bold text-[#1C2E24] uppercase tracking-wider">Miejsce Wypoczynku i Zabiegów</h3>
+                <div class="flex items-center space-x-2 pb-1 border-b border-[#F0ECE1]">
+                    <span class="text-sm">🏛️</span>
+                    <h3 class="text-xs font-bold text-[#1C2E24] uppercase tracking-wider">Dane Rejestrowe Operatora</h3>
                 </div>
-                <div class="bg-[#FAF8F5] border border-[#E2DCD0] rounded-xl p-3 text-xs text-[#1C2E24] space-y-1">
-                    <p class="font-bold">Strefa Legalnego Wypoczynku SLoW</p>
-                    <p class="text-[#7C8780]">ul. Młyńska 34a</p>
-                    <p class="text-[#7C8780]">Kórnik pod Poznaniem</p>
+                <div class="space-y-1 text-[#55605B] leading-relaxed">
+                    <p><strong>Nazwa:</strong> FUNDACJA SLOW</p>
+                    <p><strong>Siedziba:</strong> ul. Kazimierza Fludry 17 / 2, 62-035 Kórnik</p>
+                    <p><strong>Miejsce świadczenia usług:</strong> ul. Młyńska 34a, 62-035 Kórnik</p>
+                    <p><strong>NIP:</strong> 7773458851</p>
+                    <p><strong>REGON:</strong> 543460385</p>
+                    <p class="pt-1 text-[10px] text-[#7C8780]">Kontakt: <a href="mailto:biuro@slowfoundation.com" class="text-[#3A539B] underline">biuro@slowfoundation.com</a></p>
                 </div>
             </section>
 
+            <!-- Zgody Klienta (RODO / Regulamin) -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-sm space-y-2">
+                <div class="flex items-center space-x-2 pb-1 border-b border-[#F0ECE1]">
+                    <span class="text-sm">🛡️</span>
+                    <h3 class="text-xs font-bold text-[#1C2E24] uppercase tracking-wider">Twoje Zgody i Prywatność (RODO)</h3>
+                </div>
+                <div class="space-y-2 text-[11px] text-[#55605B] leading-relaxed">
+                    <div class="flex items-start space-x-2">
+                        <span class="text-emerald-600 font-bold shrink-0">✓</span>
+                        <span>Akceptacja <a href="regulamin.html" class="text-[#3A539B] underline">Regulaminu Serwisu</a> oraz <a href="regulamin.html" class="text-[#3A539B] underline">Polityki Prywatności</a>.</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <span class="text-emerald-600 font-bold shrink-0">✓</span>
+                        <span>Zgoda na przetwarzanie danych osobowych w celu obsługi rezerwacji oraz programu poleceń (PayU).</span>
+                    </div>
+                    <p class="pt-1 text-[10px] text-[#7C8780]">Masz prawo do wglądu, sprostowania oraz żądania usunięcia swoich danych. Skontaktuj się z nami mailowo.</p>
+                </div>
+            </section>
+
+            <!-- Statystyki Dziennika Uważności -->
             <section class="bg-gradient-to-br from-[#1C2833] to-[#2E4053] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden">
                 <div class="flex justify-between items-center mb-2">
                     <span class="text-[9px] uppercase tracking-wider bg-[#D35400] text-white px-2 py-0.5 rounded-md font-bold">Twoja Praktyka SLoW</span>
@@ -99,6 +127,7 @@
                 </p>
             </section>
 
+            <!-- Wsparcie, Pomoc i Powiadomienia -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-sm space-y-3">
                 <h3 class="text-xs font-bold text-[#1C2E24] uppercase tracking-wider">Wsparcie i Pomoc</h3>
                 
@@ -126,8 +155,18 @@
                 </div>
             </section>
 
+            <!-- Stopka w profilu -->
+            <footer class="pt-2 pb-4 text-center text-[10px] text-[#7C8780] space-y-1">
+                <div class="flex justify-center space-x-3">
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <span>•</span>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                </div>
+            </footer>
+
         </main>
 
+        <!-- Dolna nawigacja PWA -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
             <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>

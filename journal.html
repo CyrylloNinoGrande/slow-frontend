@@ -14,11 +14,13 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
     </style>
+    <script src="loader.js"></script>
 </head>
 <body class="bg-[#121212] text-[#2C3531] flex justify-center items-center min-h-screen m-0">
 
     <div class="w-full max-w-md bg-[#FAF8F5] h-screen flex flex-col justify-between shadow-2xl relative">
 
+        <!-- Nagłówek -->
         <header class="px-6 pt-5 pb-4 flex justify-between items-center bg-black border-b border-[#222222] shrink-0">
             <div class="w-36 flex items-center">
                 <img src="logo-slow.png" alt="Strefa SLoW" class="w-full h-auto object-contain">
@@ -31,30 +33,44 @@
             <p class="text-xs text-[#7C8780]">Obserwuj swoje trendy i dbaj o uważność.</p>
         </div>
 
-        <main class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
+        <!-- Główna zawartość -->
+        <main id="main-scroll-container" class="px-6 flex-1 pb-24 overflow-y-auto space-y-4 pt-2">
 
-            <!-- Wykres z filtrami i falą w tle -->
+            <!-- 1. WYKRES TRENDU I ENERGII (Ciało, Umysł + Ostatnie 7 dni + Nawigacja) -->
             <section class="bg-[#1C2833] text-[#FAF8F5] rounded-2xl p-4 shadow-md relative overflow-hidden space-y-3">
                 <div class="flex justify-between items-center">
-                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Analiza Trendów</span>
-                    <span class="text-sm">📈</span>
+                    <span class="text-[9px] uppercase tracking-wider bg-[#2E4053] text-[#A9CCE3] px-2 py-0.5 rounded-md font-medium">Wykres Ciała i Umysłu</span>
+                    
+                    <!-- Nawigacja po okresach (ostatnie 7 dni / przesuwanie) -->
+                    <div class="flex items-center space-x-1 bg-[#121821] px-2 py-1 rounded-xl border border-[#2E4053]">
+                        <button onclick="shiftChartDays(7)" class="text-xs text-[#A5B3C2] hover:text-white px-1 cursor-pointer" title="Wcześniej (starsze dni)">◀</button>
+                        <span id="chart-range-label" class="text-[10px] text-[#F5CBA7] font-semibold">Ostatnie 7 dni</span>
+                        <button onclick="shiftChartDays(-7)" id="btn-next-period" class="text-xs text-[#A5B3C2] hover:text-white px-1 cursor-pointer" title="Później (nowsze dni)">▶</button>
+                    </div>
                 </div>
                 
-                <!-- Przyciski filtrów wykresu -->
-                <div class="flex flex-wrap gap-1.5 pt-1">
-                    <button onclick="filterChart('all')" id="filter-all" class="chart-filter-btn text-[10px] bg-[#2E4053] text-[#FAF8F5] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">Wszystko</button>
-                    <button onclick="filterChart('body')" id="filter-body" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">💪 Ciało</button>
-                    <button onclick="filterChart('mind')" id="filter-mind" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🧠 Umysł</button>
-                    <button onclick="filterChart('wave')" id="filter-wave" class="chart-filter-btn text-[10px] bg-[#121821] text-[#A5B3C2] px-2.5 py-1 rounded-lg font-medium transition cursor-pointer">🌊 Fala Tła</button>
-                </div>
-
-                <div class="flex items-baseline space-x-2 pt-1">
+                <div class="flex items-baseline space-x-2">
                     <span id="avg-mood-display" class="text-2xl font-bold text-[#F5CBA7]">-- / 10</span>
-                    <span class="text-[10px] text-[#A5B3C2]">Średnia witalność</span>
+                    <span class="text-[10px] text-[#A5B3C2]">Średnia witalność (wybrany okres)</span>
                 </div>
 
-                <div class="bg-[#121821] p-3 rounded-xl relative h-44 w-full">
+                <div class="bg-[#121821] p-3 rounded-xl relative h-48 w-full">
                     <canvas id="moodChart"></canvas>
+                </div>
+
+                <div class="flex flex-wrap justify-between items-center text-[10px] text-[#A5B3C2] pt-1 px-1 gap-1">
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3 h-1 bg-[#E59866] inline-block rounded-full"></span>
+                        <span>Ciało</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3 h-1 bg-[#A9CCE3] inline-block rounded-full"></span>
+                        <span>Umysł</span>
+                    </div>
+                    <div class="flex items-center space-x-1.5">
+                        <span class="w-3 h-1 bg-[#F5CBA7] inline-block rounded-full opacity-60"></span>
+                        <span>Średnia</span>
+                    </div>
                 </div>
 
                 <p id="feedback-desc" class="text-[11px] text-[#D5D8DC] leading-relaxed pt-2 border-t border-[#2E4053]">
@@ -62,6 +78,7 @@
                 </p>
             </section>
 
+            <!-- 2. REFLEKSJE I SPOJRZENIE SLOW -->
             <section id="insights-section" class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5 hidden">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm">🌿</span>
@@ -70,42 +87,45 @@
                 <div id="insights-content" class="space-y-2 text-[11px] text-[#4A5550] leading-relaxed"></div>
             </section>
 
-            <!-- Podział: Ciało i Umysł -->
+            <!-- 3. MIKRORYTUAŁ SLoW DLA CIEBIE -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
+                <div class="flex items-center space-x-2">
+                    <span class="text-sm">🧘‍♂️</span>
+                    <span class="text-xs font-bold text-[#1C2E24]">Mikrorytuał SLoW dla Ciebie</span>
+                </div>
+                <p id="daily-ritual-text" class="text-xs text-[#4A5550] leading-relaxed font-medium bg-[#FAF8F5] p-3 rounded-xl border border-[#E2DCD0]">
+                    Ładowanie mikrorytuału...
+                </p>
+            </section>
+
+            <!-- 4. DWA SUWAKI: CIAŁO I UMYŚL -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-4">
-                <div class="space-y-2">
+                <span class="text-xs font-bold text-[#1C2E24] block">Dzisiejsza ocena stanu</span>
+                
+                <!-- Suwak 1: Ciało -->
+                <div class="space-y-1">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="font-bold text-[#1C2E24]">💪 Witalność fizyczna (Ciało)</span>
+                        <span class="text-[#4A5550] font-medium">Energia Fizyczna (Ciało)</span>
                         <span id="physical-label" class="font-bold text-[#E59866] text-sm">7 / 10</span>
                     </div>
                     <input type="range" id="physical-range" min="1" max="10" value="7" 
-                           oninput="updateLabel('physical', this.value)"
+                           oninput="document.getElementById('physical-label').innerText = this.value + ' / 10'"
                            class="w-full accent-[#E59866] cursor-pointer py-1">
                 </div>
 
-                <div class="space-y-2 pt-2 border-t border-[#F0ECE1]">
+                <!-- Suwak 2: Umysł -->
+                <div class="space-y-1">
                     <div class="flex justify-between items-center text-xs">
-                        <span class="font-bold text-[#1C2E24]">🧠 Spokój umysłu (Głowa)</span>
+                        <span class="text-[#4A5550] font-medium">Klarowność (Umysł)</span>
                         <span id="mental-label" class="font-bold text-[#3A539B] text-sm">7 / 10</span>
                     </div>
                     <input type="range" id="mental-range" min="1" max="10" value="7" 
-                           oninput="updateLabel('mental', this.value)"
+                           oninput="document.getElementById('mental-label').innerText = this.value + ' / 10'"
                            class="w-full accent-[#3A539B] cursor-pointer py-1">
                 </div>
             </section>
-                
-            <!-- Wybór kontekstu / obszaru dnia -->
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
-                <span class="text-xs font-bold text-[#1C2E24] block">Co głównie wypełniało dzisiejszy dzień? (Wybierz kontekst)</span>
-                
-                <div class="flex flex-wrap gap-1.5" id="context-container">
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">💻 Praca / Ekran</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🌳 Ruch / Spacer</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">👥 Ludzie / Spotkania</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🧘 Czas dla siebie</button>
-                    <button onclick="selectContext(this)" class="context-btn text-[11px] bg-[#FAF8F5] border border-[#E2DCD0] px-3 py-1.5 rounded-xl text-[#1C2E24] font-medium transition cursor-pointer">🏠 Dom / Obowiązki</button>
-                </div>
-            </section>
 
+            <!-- 5. TAGI: JAKIE ODCZUCIE DOMINUJE -->
             <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2.5">
                 <span class="text-xs font-bold text-[#1C2E24] block">Jakie odczucie dominuje? (Wybierz tagi)</span>
                 
@@ -125,18 +145,38 @@
                 </div>
             </section>
 
-            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-2">
-                <label class="block text-xs font-bold text-[#1C2E24]">Za co dzisiaj czujesz wdzięczność?</label>
-                <input type="text" id="journal-gratitude" maxlength="120" placeholder="np. za ciepłą herbatę i chwilę ciszy..." 
-                       class="w-full px-3 py-2.5 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
+            <!-- 6. PYTANIE REFLEKSYJNE I WDZIĘCZNOŚĆ -->
+            <section class="bg-white border border-[#E2DCD0] rounded-2xl p-4 shadow-xs space-y-3">
+                <div>
+                    <label id="reflection-question-label" class="block text-xs font-bold text-[#1C2E24] mb-1">Pytanie refleksyjne dnia:</label>
+                    <p id="reflection-question-text" class="text-[11px] text-[#7C8780] italic mb-2">Ładowanie pytania...</p>
+                    <textarea id="journal-reflection" maxlength="250" rows="2" placeholder="Twoja krótka refleksja..." 
+                              class="w-full px-3 py-2 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]"></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-[#1C2E24] mb-1">Za co dzisiaj czujesz wdzięczność?</label>
+                    <input type="text" id="journal-gratitude" maxlength="120" placeholder="np. za ciepłą herbatę i chwilę ciszy..." 
+                           class="w-full px-3 py-2 rounded-xl border border-[#E2DCD0] text-xs text-[#1C2E24] focus:outline-none focus:border-[#E59866]">
+                </div>
             </section>
 
             <button onclick="saveJournalEntry()" class="w-full bg-[#E59866] hover:bg-[#DC7633] text-white py-3.5 rounded-xl font-bold text-xs shadow-md transition cursor-pointer">
-                Zapisz dzisiejszy wpis w Dzienniku 🌿
+                Zapisz dzisiejszy wpis w Dzienniku SLoW 🌿
             </button>
+
+            <!-- Stopka w dzienniku -->
+            <footer class="pt-2 pb-2 text-center text-[10px] text-[#7C8780] space-y-1">
+                <div class="flex justify-center space-x-3">
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Regulamin</a>
+                    <span>•</span>
+                    <a href="regulamin.html" class="hover:underline text-[#3A539B] font-medium">Polityka Prywatności</a>
+                </div>
+            </footer>
 
         </main>
 
+        <!-- Dolna nawigacja -->
         <nav class="fixed bottom-0 left-0 right-0 z-50 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-[#E2DCD0] px-6 py-3 flex justify-around items-center shadow-lg">
             <a href="index.html" class="flex flex-col items-center text-[#95A5A6] hover:text-[#2C3531] transition">
                 <span class="text-lg">🏡</span>
@@ -168,23 +208,9 @@
         }
 
         let selectedTags = [];
-        let selectedContext = '';
         let moodChartInstance = null;
-        let globalHistoryData = [];
-
-        function updateLabel(type, val) {
-            document.getElementById(`${type}-label`).innerText = `${val} / 10`;
-        }
-
-        function selectContext(btn) {
-            document.querySelectorAll('.context-btn').forEach(b => {
-                b.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
-                b.classList.add('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
-            });
-            btn.classList.add('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
-            btn.classList.remove('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
-            selectedContext = btn.innerText;
-        }
+        let allUserHistory = [];
+        let chartOffsetDays = 0; // Przesunięcie do przeglądania starszych wpisów (0 = najnowsze 7 dni)
 
         function toggleTag(btn) {
             const tagText = btn.innerText;
@@ -199,6 +225,23 @@
             }
         }
 
+        async function loadDailyContent() {
+            try {
+                const res = await fetch(`${API_BASE}/api/journal/daily-content`);
+                const data = await res.json();
+                if (data.success) {
+                    document.getElementById('daily-ritual-text').innerText = data.ritual;
+                    document.getElementById('reflection-question-text').innerText = data.question;
+                }
+            } catch (err) {
+                console.error('Błąd pobierania treści dziennika:', err);
+                document.getElementById('daily-ritual-text').innerText = "Zatrzymaj się na minutę, oderwij wzrok od ekranu i spójrz w dal.";
+                document.getElementById('reflection-question-text').innerText = "Co w tej chwili najbardziej potrzebuje Twoje ciało?";
+            }
+        }
+
+        loadDailyContent();
+
         async function loadUserStats() {
             const userEmail = localStorage.getItem('slow_user_email');
             if (!userEmail) return;
@@ -208,13 +251,8 @@
                 const data = await response.json();
 
                 if (data.hasData) {
-                    document.getElementById('avg-mood-display').innerText = `${data.averageMood} / 10`;
-                    document.getElementById('feedback-desc').innerText = `${data.trendMessage} (Wpisów w bazie: ${data.totalEntries})`;
-
-                    if (data.history && data.history.length > 0) {
-                        globalHistoryData = data.history;
-                        renderChart(globalHistoryData, 'all');
-                    }
+                    allUserHistory = data.history || [];
+                    renderChartWithOffset();
 
                     if (data.insights && data.insights.length > 0) {
                         const insightsSection = document.getElementById('insights-section');
@@ -238,80 +276,128 @@
             }
         }
 
-        function filterChart(type) {
-            document.querySelectorAll('.chart-filter-btn').forEach(b => {
-                b.classList.remove('bg-[#2E4053]', 'text-[#FAF8F5]');
-                b.classList.add('bg-[#121821]', 'text-[#A5B3C2]');
-            });
-            const activeBtn = document.getElementById(`filter-${type}`);
-            if (activeBtn) {
-                activeBtn.classList.remove('bg-[#121821]', 'text-[#A5B3C2]');
-                activeBtn.classList.add('bg-[#2E4053]', 'text-[#FAF8F5]');
-            }
-            if (globalHistoryData.length > 0) {
-                renderChart(globalHistoryData, type);
-            }
+        function shiftChartDays(days) {
+            chartOffsetDays += days;
+            
+            // Zabezpieczenie przed wyjściem poza zakres danych w przeszłość
+            const maxOffset = Math.max(0, allUserHistory.length - 7);
+            if (chartOffsetDays > maxOffset) chartOffsetDays = maxOffset;
+            
+            // Nie idziemy w przyszłość (offset nie może być mniejszy niż 0)
+            if (chartOffsetDays < 0) chartOffsetDays = 0; 
+            
+            renderChartWithOffset();
         }
 
-        function renderChart(historyData, filter = 'all') {
+        function renderChartWithOffset() {
+            if (!allUserHistory || allUserHistory.length === 0) return;
+
+            // Wycinamy okno 7 dni na podstawie offsetu
+            const pageSize = 7;
+            const endIndex = allUserHistory.length - chartOffsetDays;
+            const startIndex = Math.max(0, endIndex - pageSize);
+            const slicedData = allUserHistory.slice(startIndex, endIndex);
+
+            // Etykieta zakresu dat
+            const rangeLabel = document.getElementById('chart-range-label');
+            if (slicedData.length > 0) {
+                rangeLabel.innerText = `${slicedData[0].date} – ${slicedData[slicedData.length - 1].date}`;
+            } else {
+                rangeLabel.innerText = "Brak danych";
+            }
+
+            // Przycisk "później" (▶) aktywny tylko jeśli jesteśmy cofnięci w czasie względem dzisiaj
+            const btnNext = document.getElementById('btn-next-period');
+            if (btnNext) {
+                btnNext.style.opacity = chartOffsetDays > 0 ? "1" : "0.3";
+                btnNext.style.pointerEvents = chartOffsetDays > 0 ? "auto" : "none";
+            }
+
+            // Średnia dla wybranego zakresu oraz porównanie z poprzednim tygodniem
+            if (slicedData.length > 0) {
+                const sum = slicedData.reduce((acc, item) => acc + ((item.physical + item.mental) / 2), 0);
+                const avg = (sum / slicedData.length).toFixed(1);
+                document.getElementById('avg-mood-display').innerText = `${avg} / 10`;
+
+                // Obliczamy dane dla poprzedniego tygodnia (okno przesunięte o 7 dni wstecz względem aktualnego okna)
+                const prevEndIndex = startIndex;
+                const prevStartIndex = Math.max(0, prevEndIndex - pageSize);
+                const prevSlicedData = allUserHistory.slice(prevStartIndex, prevEndIndex);
+
+                let feedbackText = `Wyświetlam ${slicedData.length} wpisów z wybranego okresu.`;
+
+                if (prevSlicedData.length > 0) {
+                    const prevSum = prevSlicedData.reduce((acc, item) => acc + ((item.physical + item.mental) / 2), 0);
+                    const prevAvg = (prevSum / prevSlicedData.length).toFixed(1);
+                    const diff = (avg - prevAvg).toFixed(1);
+
+                    if (diff > 0) {
+                        feedbackText += ` 📈 Wzrost o +${diff} pkt. w stosunku do poprzedniego tygodnia (śr. ${prevAvg}).`;
+                    } else if (diff < 0) {
+                        feedbackText += ` 📉 Spadek o ${diff} pkt. w stosunku do poprzedniego tygodnia (śr. ${prevAvg}).`;
+                    } else {
+                        feedbackText += ` ➡️ Wynik stabilny w porównaniu do poprzedniego tygodnia (śr. ${prevAvg}).`;
+                    }
+                } else {
+                    feedbackText += ` Brak danych z poprzedniego okresu do porównania.`;
+                }
+
+                document.getElementById('feedback-desc').innerText = feedbackText;
+            }
+
+            renderChart(slicedData);
+        }
+
+        function renderChart(historyData) {
             const ctx = document.getElementById('moodChart').getContext('2d');
             const labels = historyData.map(item => item.date);
-            
-            const physicalData = historyData.map(item => item.physical !== undefined ? item.physical : item.mood);
-            const mentalData = historyData.map(item => item.mental !== undefined ? item.mental : item.mood);
-            const waveData = physicalData.map((p, idx) => Number(((p + mentalData[idx]) / 2).toFixed(1)));
+            const physicalData = historyData.map(item => item.physical);
+            const mentalData = historyData.map(item => item.mental);
 
-            const datasets = [];
-
-            if (filter === 'all' || filter === 'wave') {
-                datasets.push({
-                    label: 'Fala Wypadkowa',
-                    data: waveData,
-                    borderColor: 'rgba(229, 152, 102, 0.4)',
-                    backgroundColor: 'rgba(229, 152, 102, 0.15)',
-                    borderWidth: 1.5,
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 0,
-                    order: 3
-                });
-            }
-
-            if (filter === 'all' || filter === 'body') {
-                datasets.push({
-                    label: 'Ciało',
-                    data: physicalData,
-                    borderColor: '#E59866',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: false,
-                    pointBackgroundColor: '#E59866',
-                    pointRadius: 4,
-                    order: 1
-                });
-            }
-
-            if (filter === 'all' || filter === 'mind') {
-                datasets.push({
-                    label: 'Umysł',
-                    data: mentalData,
-                    borderColor: '#A9CCE3',
-                    backgroundColor: 'transparent',
-                    borderWidth: 2,
-                    tension: 0.3,
-                    fill: false,
-                    pointBackgroundColor: '#3A539B',
-                    pointRadius: 4,
-                    order: 2
-                });
-            }
+            const combinedData = historyData.map(item => ((item.physical + item.mental) / 2));
 
             if (moodChartInstance) moodChartInstance.destroy();
 
             moodChartInstance = new Chart(ctx, {
                 type: 'line',
-                data: { labels: labels, datasets: datasets },
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Średnia',
+                            data: combinedData,
+                            borderColor: '#F5CBA7',
+                            backgroundColor: 'rgba(245, 203, 167, 0.15)',
+                            borderWidth: 1.5,
+                            tension: 0.3,
+                            fill: true,
+                            pointRadius: 0,
+                            order: 3
+                        },
+                        {
+                            label: 'Ciało',
+                            data: physicalData,
+                            borderColor: '#E59866',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            pointBackgroundColor: '#E59866',
+                            pointRadius: 3,
+                            order: 1
+                        },
+                        {
+                            label: 'Umysł',
+                            data: mentalData,
+                            borderColor: '#A9CCE3',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            fill: false,
+                            pointBackgroundColor: '#A9CCE3',
+                            pointRadius: 3,
+                            order: 2
+                        }
+                    ]
+                },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -336,19 +422,11 @@
                         },
                         x: {
                             grid: { display: false },
-                            ticks: { color: '#A5B3C2', font: { size: 9 }, maxTicksLimit: 5 }
+                            ticks: { color: '#A5B3C2', font: { size: 9 }, maxTicksLimit: 7 }
                         }
                     }
                 }
             });
-        }
-
-        // Automatyczne ustalanie pory dnia na podstawie aktualnej godziny
-        function getTimeOfDay() {
-            const hour = new Date().getHours();
-            if (hour >= 5 && hour < 12) return '🌅 Poranek';
-            if (hour >= 12 && hour < 18) return '☀️ Popołudnie';
-            return '🌙 Wieczór';
         }
 
         async function saveJournalEntry() {
@@ -362,31 +440,38 @@
             const mental = document.getElementById('mental-range').value;
             const mood = Math.round((parseInt(physical) + parseInt(mental)) / 2);
             const effect = selectedTags.join(', ');
+            const reflection = document.getElementById('journal-reflection').value.trim();
             const gratitude = document.getElementById('journal-gratitude').value.trim();
-            const context = selectedContext;
-            const timeOfDay = getTimeOfDay(); // automatycznie pobierana pora dnia
+            const timeOfDay = new Date().getHours() < 12 ? 'Rano' : (new Date().getHours() < 18 ? 'Popołudnie' : 'Wieczór');
 
             try {
                 const response = await fetch(`${API_BASE}/api/journal`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        email: userEmail, 
-                        mood, 
-                        physical, 
-                        mental, 
-                        effect, 
-                        gratitude, 
-                        context, 
-                        timeOfDay,
-                        reflection: '' 
-                    })
+                    body: JSON.stringify({ email: userEmail, mood, physical, mental, effect, gratitude, timeOfDay, reflection })
                 });
 
                 const result = await response.json();
                 if (result.success) {
                     alert('Twój wpis został zapisany w Dzienniku SLoW 🌿');
-                    window.location.href = 'index.html';
+                    
+                    // Reset pól formularza
+                    document.getElementById('journal-reflection').value = '';
+                    document.getElementById('journal-gratitude').value = '';
+                    selectedTags = [];
+                    document.querySelectorAll('.tag-btn').forEach(btn => {
+                        btn.classList.remove('bg-[#1C2833]', 'text-white', 'border-[#1C2833]');
+                        btn.classList.add('bg-[#FAF8F5]', 'text-[#1C2E24]', 'border-[#E2DCD0]');
+                    });
+
+                    // Odświeżenie statystyk i przewinięcie na samą górę
+                    chartOffsetDays = 0;
+                    await loadUserStats();
+                    
+                    const container = document.getElementById('main-scroll-container');
+                    if (container) {
+                        container.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
                 } else {
                     alert('Błąd: ' + result.error);
                 }
