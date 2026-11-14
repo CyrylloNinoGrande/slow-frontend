@@ -3,7 +3,9 @@
 // ==========================================
 
 (function() {
-    // 1. Automatyczne wstrzyknięcie HTML loadera do DOM po załadowaniu strony
+    console.log("🌿 [SLoW Loader] Skrypt ładujący został pomyślnie załadowany.");
+
+    // 1. Automatyczne wstrzyknięcie HTML loadera do DOM
     function injectLoaderDOM() {
         if (document.getElementById('slow-global-loader')) return;
 
@@ -23,6 +25,7 @@
         </div>
         `;
         document.insertAdjacentHTML('beforeend', loaderHtml);
+        console.log("🌿 [SLoW Loader] Wstrzyknięto HTML loadera do DOM.");
     }
 
     if (document.readyState === 'loading') {
@@ -31,7 +34,7 @@
         injectLoaderDOM();
     }
 
-    // 2. Logika loadera i rotowania komunikatów
+    // 2. Komunikaty
     const slowLoaderMessages = [
         "Budzimy serwery SLoW, chwila cierpliwości...",
         "Render rozgrzewa silniki, pobieramy dane z bazy...",
@@ -50,6 +53,7 @@
         }
         if (!loader) return;
         
+        console.log("🌿 [SLoW Loader] Wyświetlam loader na ekranie.");
         loader.classList.remove('hidden');
 
         let msgIndex = 0;
@@ -64,22 +68,30 @@
     }
 
     function hideSlowLoader() {
+        console.log("🌿 [SLoW Loader] Ukrywam loader.");
         clearInterval(slowMessageInterval);
         const loader = document.getElementById('slow-global-loader');
         if (loader) loader.classList.add('hidden');
     }
 
-    // 3. Inteligentne spięcie z globalnym fetch
+    // 3. Inteligentne spięcie z globalnym fetch (obsługa String oraz obiektu Request)
     const originalFetch = window.fetch;
     window.fetch = async function(...args) {
-        const url = args[0];
-        const isBackendApiCall = typeof url === 'string' && (url.includes('/api/') || url.includes('onrender.com'));
+        let urlString = '';
+        if (typeof args[0] === 'string') {
+            urlString = args[0];
+        } else if (args[0] && typeof args[0] === 'object' && typeof args[0].url === 'string') {
+            urlString = args[0].url;
+        }
+
+        const isBackendApiCall = urlString.includes('/api/') || urlString.includes('onrender.com');
 
         if (isBackendApiCall) {
+            console.log("🌿 [SLoW Loader] Wykryto żądanie API:", urlString);
             clearTimeout(slowLoaderTimer);
             slowLoaderTimer = setTimeout(() => {
                 showSlowLoader();
-            }, 400);
+            }, 150);
         }
 
         try {
@@ -91,5 +103,12 @@
                 hideSlowLoader();
             }
         }
+    };
+
+    // Globalna funkcja pomocnicza do testowania z konsoli przeglądarki: window.testSlowLoader()
+    window.testSlowLoader = function() {
+        console.log("🌿 [SLoW Loader] Test ręczny wywołany.");
+        showSlowLoader();
+        setTimeout(hideSlowLoader, 4000);
     };
 })();
