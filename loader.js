@@ -98,7 +98,7 @@
             clearTimeout(slowLoaderTimer);
             slowLoaderTimer = setTimeout(() => {
                 showSlowLoader();
-            }, 150);
+            }, 300);
         }
 
         try {
