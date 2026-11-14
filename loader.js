@@ -44,7 +44,7 @@
     // 2. Komunikaty rotacyjne
     const slowLoaderMessages = [
         "Budzimy serwery SLoW, chwila cierpliwości...",
-        "Render rozgrzewa silniki, pobieramy dane z bazy...",
+        "Zwalniamy tempo, pobieramy Twoje dane...",
         "Porządkujemy harmonogram i sprawdzamy dostępność...",
         "Już prawie na miejscu, dziękujemy za wyrozumiałość 🌿"
     ];
