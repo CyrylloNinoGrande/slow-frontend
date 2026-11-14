@@ -5,12 +5,14 @@
 (function() {
     console.log("🌿 [SLoW Loader] Skrypt ładujący został pomyślnie załadowany.");
 
-    // 1. Automatyczne wstrzyknięcie HTML loadera do DOM
+    // 1. Bezpieczne wstrzyknięcie HTML loadera do DOM
     function injectLoaderDOM() {
         if (document.getElementById('slow-global-loader')) return;
 
-        const loaderHtml = `
-        <div id="slow-global-loader" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-[9999] flex flex-col items-center justify-center p-6 hidden">
+        const wrapper = document.createElement('div');
+        wrapper.id = 'slow-global-loader';
+        wrapper.className = 'fixed inset-0 bg-black/50 backdrop-blur-xs z-[9999] flex flex-col items-center justify-center p-6 hidden';
+        wrapper.innerHTML = `
             <div class="bg-[#FAF8F5] border border-[#E2DCD0] rounded-3xl p-6 shadow-2xl flex flex-col items-center space-y-4 max-w-xs w-full text-center">
                 <div class="flex space-x-2 items-center justify-center py-2">
                     <div class="w-3 h-3 bg-[#E59866] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
@@ -22,19 +24,24 @@
                     <p id="slow-loader-subtitle" class="text-[11px] text-[#7C8780]">Zbieramy dla Ciebie dane z bazy.</p>
                 </div>
             </div>
-        </div>
         `;
-        document.insertAdjacentHTML('beforeend', loaderHtml);
-        console.log("🌿 [SLoW Loader] Wstrzyknięto HTML loadera do DOM.");
+
+        if (document.body) {
+            document.body.appendChild(wrapper);
+            console.log("🌿 [SLoW Loader] Wstrzyknięto HTML loadera do DOM (body gotowe).");
+        } else {
+            document.addEventListener('DOMContentLoaded', () => {
+                if (!document.getElementById('slow-global-loader') && document.body) {
+                    document.body.appendChild(wrapper);
+                    console.log("🌿 [SLoW Loader] Wstrzyknięto HTML loadera do DOM po DOMContentLoaded.");
+                }
+            });
+        }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', injectLoaderDOM);
-    } else {
-        injectLoaderDOM();
-    }
+    injectLoaderDOM();
 
-    // 2. Komunikaty
+    // 2. Komunikaty rotacyjne
     const slowLoaderMessages = [
         "Budzimy serwery SLoW, chwila cierpliwości...",
         "Render rozgrzewa silniki, pobieramy dane z bazy...",
@@ -74,7 +81,7 @@
         if (loader) loader.classList.add('hidden');
     }
 
-    // 3. Inteligentne spięcie z globalnym fetch (obsługa String oraz obiektu Request)
+    // 3. Inteligentne spięcie z globalnym fetch
     const originalFetch = window.fetch;
     window.fetch = async function(...args) {
         let urlString = '';
@@ -105,7 +112,7 @@
         }
     };
 
-    // Globalna funkcja pomocnicza do testowania z konsoli przeglądarki: window.testSlowLoader()
+    // Globalna funkcja do testowania ręcznego w konsoli przeglądarki
     window.testSlowLoader = function() {
         console.log("🌿 [SLoW Loader] Test ręczny wywołany.");
         showSlowLoader();
